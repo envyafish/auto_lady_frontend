@@ -91,25 +91,19 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
 
     return (
         <div className="card bg-base-100 shadow-xl">
-            {/*<figure>*/}
-            {/*    <div className="carousel rounded-box">*/}
-            {/*        {photos.map((item, index) => (*/}
-            {/*            <div className="carousel-item w-full" key={index}>*/}
-            {/*                <img*/}
-            {/*                    referrerPolicy="no-referrer"*/}
-            {/*                    src={item}*/}
-            {/*                    className=""*/}
-            {/*                    />*/}
-            {/*            </div>*/}
-            {/*        ))}*/}
-            {/*    </div>*/}
-            {/*</figure>*/}
+            <figure>
+                <img
+                    referrerPolicy="no-referrer"
+                    src={'http://127.0.0.1:8000/v1/image-proxy?url=' + code.banner}
+                    className=""
+                />
+            </figure>
             <div className="card-body">
                 <h2 className="card-title">
                     {code.code}
                     <div className={`badge badge-${badge}`}>{status}</div>
                 </h2>
-                {/*<p>{code.title}</p>*/}
+                <p>{code.title}</p>
                 <div>
                     {actors.map((item, index) => (
                         <span className="badge badge-outline mr-1" key={index}>{item}</span>
