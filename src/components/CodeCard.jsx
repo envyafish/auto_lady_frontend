@@ -112,7 +112,7 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
 
                 <div className="card-actions justify-end">
                     <div className="card-actions justify-end">
-                        <button className="btn btn-sm btn-outline btn-default"
+                        <button className="btn btn-sm btn-outline btn-accent"
                                 onClick={() => document.getElementById('filterModal-' + code.code).showModal()}>订阅
                         </button>
                         {code.status === 'SUBSCRIBE' &&

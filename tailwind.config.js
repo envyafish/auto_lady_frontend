@@ -4,6 +4,11 @@ module.exports = {
     theme: {
         extend: {},
     },
+    safelist: [
+        {
+            pattern: /(.*)-(neutral|primary|secondary|accent|info|success|warning|error|ghost|link|outline|active|disabled|danger)$/
+        },
+    ],
     daisyui: {
         themes: [
             "light",
