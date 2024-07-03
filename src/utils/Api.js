@@ -1,6 +1,6 @@
 // api.js
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL + '/v1';
 
 class API {
     static async request(endpoint, method = 'GET', data = null) {

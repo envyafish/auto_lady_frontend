@@ -107,7 +107,7 @@ const Config = () => {
     }
 
     const fetchConfig = async () => {
-        const data = await API.get('/v1/config')
+        const data = await API.get('/config')
         setConfig(data.data);
         loadSort(data.data['DEFAULT_SORT'])
         loadFilter(data.data['DEFAULT_FILTER'])
