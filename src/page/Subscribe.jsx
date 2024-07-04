@@ -5,7 +5,7 @@ import API from "../utils/Api";
 
 const subscribeStatus = {
     '全部': '',
-    '已订阅': 'SUBSCRIBE',
+    '订阅中': 'SUBSCRIBE',
     '已完成': 'COMPLETE',
     '未订阅': 'UN_SUBSCRIBE'
 }
@@ -25,6 +25,7 @@ const Subscribe = () => {
     const [pages, setPages] = useState([])
 
     const fetchCodes = () => {
+        setCodes([])
         Api.post('/codes/list', query).then(res => {
             setCodes(res.data.data)
             setTotal(res.data.total)
@@ -78,10 +79,10 @@ const Subscribe = () => {
                 </a>
                 <a
                     role="tab"
-                    className={`tab ${activeTab === '已订阅' ? 'tab-active' : ''}`}
-                    onClick={() => handleTabClick('已订阅')}
+                    className={`tab ${activeTab === '订阅中' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('订阅中')}
                 >
-                    已订阅
+                    订阅中
                 </a>
                 <a
                     role="tab"
@@ -98,7 +99,7 @@ const Subscribe = () => {
                     未订阅
                 </a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4 place-content-center mt-2">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {codes.map((item, index) => (
                     <CodeCard code={item} key={index} onRefresh={fetchCodes}
                               defaultFilter={config.DEFAULT_FILTER}></CodeCard>

@@ -5,6 +5,7 @@ import Rank from "./Rank";
 import Actor from "./Actor";
 import Config from "./Config";
 import Profile from "./Profile";
+import SearchResult from "./SearchResult";
 
 const Home = () => {
     return (
@@ -17,6 +18,7 @@ const Home = () => {
                     <Route path="actor" element={<Actor/>}/>
                     <Route path="config" element={<Config/>}/>
                     <Route path="profile" element={<Profile/>}/>
+                    <Route path="search/:query" element={<SearchResult/>}/>
                 </Routes>
             </div>
         </div>

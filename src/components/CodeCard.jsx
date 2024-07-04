@@ -1,6 +1,6 @@
 import subscribe from "../page/Subscribe";
 import Api from "../utils/Api";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const statusMap = {
     'COMPLETE': '已完成',
@@ -8,15 +8,15 @@ const statusMap = {
     'UN_SUBSCRIBE': '未订阅'
 }
 const badgeMap = {
-    'COMPLETE': 'success',
-    'SUBSCRIBE': 'info',
-    'UN_SUBSCRIBE': 'warning'
+    'COMPLETE': 'accent',
+    'SUBSCRIBE': 'primary',
+    'UN_SUBSCRIBE': 'neutral'
 }
 const CodeCard = ({code, defaultFilter, onRefresh}) => {
-    const photos = []
-    photos.push(code.banner)
     const still_photo_arr = code.still_photo ? code.still_photo.split(',') : []
-    photos.push(...still_photo_arr)
+    const genres_arr = code.genres ? code.genres.split(',') : []
+    const actors = code.casts ? code.casts.split(',') : []
+    const [codeStatus, setCodeStatus] = useState(code.status)
     const [subscribe, setSubscribe] = useState(
         {
             code: code.code,
@@ -25,21 +25,21 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
         }
     )
     const [loading, setLoading] = useState(false)
+    const [status, setStatus] = useState(statusMap[code.status])
+    const [badge, setBadge] = useState(badgeMap[code.status])
 
-    let status = statusMap[code.status];
-    let badge = badgeMap[code.status]
-    if (code.is_exist_server) {
-        status = '已入库'
-        badge = 'success'
-    }
 
-    const actors = code.casts ? code.casts.split(',') : []
+    useEffect(() => {
+        setStatus(statusMap[codeStatus])
+        setBadge(badgeMap[codeStatus])
+    }, [codeStatus]);
 
 
     const subCode = () => {
         setLoading(true)
         Api.post('/codes/sub', subscribe).then(res => {
             setLoading(false)
+            setCodeStatus("SUBSCRIBE")
             onRefresh()
         })
     };
@@ -47,11 +47,10 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
         setLoading(true)
         Api.delete('/codes/cancel?code_no=' + code.code).then(res => {
             setLoading(false)
+            setCodeStatus("UN_SUBSCRIBE")
             onRefresh()
-        });
-    };
-    const downloadCode = () => {
 
+        });
     };
 
     const handleChineseChange = (e) => {
@@ -88,34 +87,53 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
         })
     };
 
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const nextSlide = () => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    };
+
+    const prevSlide = () => {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    };
+
 
     return (
         <div className="card bg-base-100 shadow-xl">
-            <figure>
-                <img
-                    referrerPolicy="no-referrer"
-                    src={'http://127.0.0.1:8000/v1/image-proxy?url=' + code.banner}
-                    className=""
-                />
-            </figure>
+            {/*<figure>*/}
+            {/*    <img*/}
+            {/*        referrerPolicy="no-referrer"*/}
+            {/*        src={'http://127.0.0.1:8000/v1/image-proxy?url=' + code.banner}*/}
+            {/*        className=""*/}
+            {/*    />*/}
+            {/*</figure>*/}
             <div className="card-body">
                 <h2 className="card-title">
                     {code.code}
-                    <div className={`badge badge-${badge}`}>{status}</div>
+                    <div className={`badge badge-sm badge-${badge}`}>{status}</div>
+                    {code.is_exist_server && <div className={`badge badge-sm badge-success`}>已入库</div>}
                 </h2>
-                <p>{code.title}</p>
+                <span className="mr-1">发售日期：{code.release_date}</span>
+                <p className="text-sm">{code.title}</p>
                 <div>
                     {actors.map((item, index) => (
-                        <span className="badge badge-outline mr-1" key={index}>{item}</span>
+                        <span className="badge badge-sm badge-outline badge-info mr-1" key={index}>{item}</span>
+                    ))}
+                    {genres_arr.map((item, index) => (
+                        <span className="badge badge-sm badge-outline mr-1" key={index}>{item}</span>
                     ))}
                 </div>
 
+
                 <div className="card-actions justify-end">
                     <div className="card-actions justify-end">
+                        <button className="btn btn-sm btn-outline btn-neutral"
+                                onClick={() => document.getElementById('stillPhotoModal-' + code.code).showModal()}>剧照
+                        </button>
                         <button className="btn btn-sm btn-outline btn-accent"
                                 onClick={() => document.getElementById('filterModal-' + code.code).showModal()}>订阅
                         </button>
-                        {code.status === 'SUBSCRIBE' &&
+                        {codeStatus === 'SUBSCRIBE' &&
                             <button className="btn btn-sm btn-outline btn-warning"
                                     onClick={() => document.getElementById('cancelConfirmModal-' + code.code).showModal()}>取消</button>
                         }
@@ -123,6 +141,33 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
                     </div>
                 </div>
             </div>
+            <dialog id={`stillPhotoModal-${code.code}`} className="modal modal-bottom flex justify-center items-center">
+                <div className="modal-box sm:w-7/12">
+                    <div className="carousel rounded-box w-full">
+                        {/*{still_photo_arr.map((item, index) => (*/}
+                        {/*    <div*/}
+                        {/*        key={index}*/}
+                        {/*        className={`carousel-item w-full flex justify-center items-center ${index === currentIndex ? 'block' : 'hidden'}`}>*/}
+                        {/*        <img*/}
+                        {/*            src={item}*/}
+                        {/*            className="rounded-box max-w-full max-h-96 object-cover" alt={`Slide ${index + 1}`}*/}
+                        {/*        />*/}
+                        {/*    </div>*/}
+                        {/*))}*/}
+                        <button className="btn btn-circle absolute top-1/2 left-0 transform -translate-y-1/2"
+                                onClick={prevSlide}>❮
+                        </button>
+                        <button className="btn btn-circle absolute top-1/2 right-0 transform -translate-y-1/2"
+                                onClick={nextSlide}>❯
+                        </button>
+                    </div>
+                    <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                </div>
+
+
+            </dialog>
             <dialog id={`cancelConfirmModal-${code.code}`} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">取消</h3>

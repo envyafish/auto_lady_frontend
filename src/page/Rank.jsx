@@ -15,6 +15,7 @@ const Rank = () => {
     })
     const fetchCodes = () => {
         setLoading(true)
+        setCodes([])
         Api.get('/ranks?page=' + page).then(res => {
             setLoading(false)
             setCodes(res.data)
@@ -46,7 +47,7 @@ const Rank = () => {
             {
                 loading && <span className="loading loading-bars loading-lg"></span>
             }
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4 place-content-center mt-2">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {codes.map((item, index) => (
                     <CodeCard code={item} key={index} onRefresh={fetchCodes}
                               defaultFilter={config.DEFAULT_FILTER}></CodeCard>
