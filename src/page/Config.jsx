@@ -9,6 +9,17 @@ const initialSort = [
     {id: 'uhd', content: 'UHD'}
 ];
 
+const loadSort = (sort_arr) => {
+    const newItems = []
+    for (let i = 0; i < sort_arr.length; i++) {
+        const item = initialSort.find(item => item.id === sort_arr[i]);
+        if (item) {
+            newItems.push(item)
+        }
+    }
+    return newItems
+}
+
 const fields = {
     "pt": [
         {"name": "MTEAM_API_KEY", "label": "馒头令牌"},
@@ -44,43 +55,15 @@ const fields = {
         {"name": "PROXY", "label": "代理地址"}
     ]
 }
+
 const Config = () => {
-    const [config, setConfig] = useState({
-        "EMBY_URL": "",
-        "EMBY_API_KEY": "",
-        "PLEX_URL": "",
-        "PLEX_TOKEN": "",
-        "JELLYFIN_URL": "",
-        "JELLYFIN_API_KEY": "",
-        "JELLYFIN_USER": "",
-        "QBITTORRENT_HOST": "",
-        "QBITTORRENT_PORT": "",
-        "QBITTORRENT_USERNAME": "",
-        "QBITTORRENT_PASSWORD": "",
-        "QBITTORRENT_DOWNLOAD_PATH": "",
-        "QBITTORRENT_CATEGORY": "",
-        "FSM_API_KEY": "",
-        "FSM_PASSKEY": "",
-        "MTEAM_API_KEY": "",
-        "WECHAT_CORP_ID": "",
-        "WECHAT_CORP_SECRET": "",
-        "WECHAT_AGENT_ID": "",
-        "WECHAT_PROXY": "",
-        "TELEGRAM_BOT_TOKEN": "",
-        "TELEGRAM_CHAT_ID": "",
-        "PROXY": ""
-    });
-    const [sort, setSort] = useState(initialSort);
+    const [config, setConfig] = useState(JSON.parse(localStorage.getItem("config")));
+    const [sort, setSort] = useState(loadSort(JSON.parse(localStorage.getItem("config"))['DEFAULT_SORT']));
     const [alert, setAlert] = useState({
         message: '',
         type: 'success',
         isVisible: false
 
-    });
-    const [filter, setFilter] = useState({
-        "only_chinese": false,
-        "only_uc": false,
-        "only_uhd": false
     });
 
     const moveItem = (index, direction) => {
@@ -88,31 +71,11 @@ const Config = () => {
         const [movedItem] = newItems.splice(index, 1);
         newItems.splice(index + direction, 0, movedItem);
         setSort(newItems);
+        setConfig({
+            ...config,
+            DEFAULT_SORT: newItems.map(item => item.id)
+        });
     };
-    const loadSort = (default_sort) => {
-        const sort_arr = default_sort.split(',')
-        const newItems = []
-        for (let i = 0; i < sort_arr.length; i++) {
-            const item = sort.find(item => item.id === sort_arr[i]);
-            if (item) {
-                newItems.push(item)
-            }
-        }
-        setSort(newItems)
-    }
-
-    const loadFilter = (default_filter) => {
-        console.log(default_filter)
-        setFilter(JSON.parse(default_filter))
-    }
-
-    const fetchConfig = async () => {
-        const data = await API.get('/config')
-        setConfig(data.data);
-        loadSort(data.data['DEFAULT_SORT'])
-        loadFilter(data.data['DEFAULT_FILTER'])
-        return data.data
-    }
 
     const handleChange = (event) => {
         const {name, value} = event.target;
@@ -123,32 +86,27 @@ const Config = () => {
     };
 
     const handleChineseChange = (e) => {
-        const newFilter = {...filter}
-        newFilter['only_chinese'] = e.target.checked
-        setFilter(newFilter)
-
+        setConfig({
+            ...config,
+            DEFAULT_FILTER: {...config.DEFAULT_FILTER, only_chinese: e.target.checked}
+        })
     }
     const handleUCChange = (e) => {
-        const newFilter = {...filter}
-        newFilter['only_uc'] = e.target.checked
-        setFilter(newFilter)
-
+        setConfig({
+            ...config,
+            DEFAULT_FILTER: {...config.DEFAULT_FILTER, only_uc: e.target.checked}
+        })
     }
     const handleUHDChange = (e) => {
-        const newFilter = {...filter}
-        newFilter['only_uhd'] = e.target.checked
-        setFilter(newFilter)
-
+        setConfig({
+            ...config,
+            DEFAULT_FILTER: {...config.DEFAULT_FILTER, only_uhd: e.target.checked}
+        })
     }
 
-    useEffect(() => {
-        fetchConfig();
-    }, []);
     const saveConfig = () => {
-        const newConfig = {...config}
-        newConfig['DEFAULT_SORT'] = sort.map(item => item.id).join(',')
-        newConfig['DEFAULT_FILTER'] = JSON.stringify(filter)
-        API.post('/v1/config', newConfig).then((data) => {
+        API.post('/config', config).then((data) => {
+            localStorage.setItem("config", JSON.stringify(config))
             setAlert({
                 message: data.message,
                 type: 'success',
@@ -163,6 +121,17 @@ const Config = () => {
             }, 3000); // 3秒后自动隐藏
         })
     };
+    const handleImageModeChange = (e) => {
+        setConfig({
+            ...config,
+            IMAGE_MODE: e.target.value
+        })
+    };
+
+    useEffect(() => {
+        setConfig(JSON.parse(localStorage.getItem("config")))
+        setSort(loadSort(JSON.parse(localStorage.getItem("config"))['DEFAULT_SORT']))
+    },[])
     return (
         <div>
             <Alert
@@ -264,7 +233,7 @@ const Config = () => {
                                 <label className="label cursor-pointer">
                                     <span className="label-text">仅中文</span>
                                     <input type="checkbox" className="toggle toggle-sm"
-                                           checked={filter ? filter['only_chinese'] : false}
+                                           checked={config.DEFAULT_FILTER.only_chinese}
                                            onChange={handleChineseChange}/>
                                 </label>
                             </div>
@@ -272,14 +241,16 @@ const Config = () => {
                                 <label className="label cursor-pointer">
                                     <span className="label-text">仅无码</span>
                                     <input type="checkbox" className="toggle toggle-sm"
-                                           checked={filter ? filter['only_uc'] : false} onChange={handleUCChange}/>
+                                           checked={config.DEFAULT_FILTER.only_uc}
+                                           onChange={handleUCChange}/>
                                 </label>
                             </div>
                             <div className="form-control">
                                 <label className="label cursor-pointer">
                                     <span className="label-text">仅UHD</span>
                                     <input type="checkbox" className="toggle toggle-sm"
-                                           checked={filter ? filter['only_uhd'] : false} onChange={handleUHDChange}/>
+                                           checked={config.DEFAULT_FILTER.only_uhd}
+                                           onChange={handleUHDChange}/>
                                 </label>
                             </div>
                         </div>
@@ -316,24 +287,58 @@ const Config = () => {
                 <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="其他"/>
                 <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
                     <form>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            {
-                                fields.other.map((item) => (
-                                    <label className="form-control w-full max-w-xs" key={item.name}>
-                                        <div className="label">
-                                            <span className="label-text">{item.label}</span>
-                                        </div>
-                                        <input type="text" name={item.name}
-                                               value={config ? config[item.name] : ''}
-                                               onChange={handleChange}
-                                               className="input input-sm input-bordered w-full max-w-xs"/>
+                        <div className="grid grid-cols-1 gap-4">
+                            <label className="form-control w-full max-w-xs">
+                                <div className="label">
+                                    <span className="label-text">图片模式</span>
+                                </div>
+                                <div className="form-control">
+                                    <label className="label cursor-pointer">
+                                        <span className="label-text">无图</span>
+                                        <input type="radio" name="radio-10" className="radio checked:bg-red-500"
+                                               value="INVISIBLE" checked={config.IMAGE_MODE === "INVISIBLE"}
+                                               onChange={handleImageModeChange}/>
                                     </label>
-                                ))
-                            }
+                                </div>
+                                <div className="form-control">
+                                    <label className="label cursor-pointer">
+                                        <span className="label-text">有图</span>
+                                        <input type="radio" name="radio-10" className="radio checked:bg-blue-500"
+                                               value="VISIBLE" checked={config.IMAGE_MODE === "VISIBLE"}
+                                               onChange={handleImageModeChange}/>
+                                    </label>
+                                </div>
+                                <div className="form-control">
+                                    <label className="label cursor-pointer">
+                                        <span className="label-text">模糊</span>
+                                        <input type="radio" name="radio-10" className="radio checked:bg-yellow-500"
+                                               value="BLUR" checked={config.IMAGE_MODE === "BLUR"}
+                                               onChange={handleImageModeChange}/>
+                                    </label>
+                                </div>
+                            </label>
+                            <div className="divider"></div>
+                            <div className="grid grid-cols-1 gap-4">
+                                {
+                                    fields.other.map((item) => (
+                                        <label className="form-control w-full max-w-xs" key={item.name}>
+                                            <div className="label">
+                                                <span className="label-text">{item.label}</span>
+                                            </div>
+                                            <input type="text" name={item.name}
+                                                   value={config ? config[item.name] : ''}
+                                                   onChange={handleChange}
+                                                   className="input input-sm input-bordered w-full max-w-xs"/>
+                                        </label>
+                                    ))
+                                }
+                            </div>
+
                         </div>
                     </form>
                 </div>
             </div>
+            <div className="divider"></div>
             <div className="text-center">
                 <button className="btn btn-sm btn-primary btn-wide mt-2" onClick={saveConfig}>保存</button>
             </div>

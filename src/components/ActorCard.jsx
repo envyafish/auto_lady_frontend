@@ -1,6 +1,6 @@
 import Api from "../utils/Api";
 import {useState} from "react";
-
+const IMAGE_PROXY_URL = import.meta.env.VITE_IMAGE_PROXY;
 const ActorCard = ({actor, onRefresh}) => {
 
     const [limitDate, setLimitDate] = useState('')
@@ -44,12 +44,12 @@ const ActorCard = ({actor, onRefresh}) => {
                         <div className="w-10 rounded-full">
                             <img
                                 alt="Tailwind CSS chat bubble component"
-                                src={"http://127.0.0.1:8000/v1/image-proxy?url=" + actor.photo}/>
+                                src={`${IMAGE_PROXY_URL}?url= ${actor.photo}`}/>
                         </div>
                     </div>
                     <div className="chat-bubble"><img
                         alt="Tailwind CSS chat bubble component"
-                        src={"http://127.0.0.1:8000/v1/image-proxy?url=" + actor.photo}/></div>
+                        src={`${IMAGE_PROXY_URL}?url= ${actor.photo}`}/></div>
                 </div>
                 <div className="chat chat-start">
                     <div className="chat-image avatar">

@@ -18,9 +18,6 @@ const Subscribe = () => {
         query: '',
         status: ''
     })
-    const [config, setConfig] = useState({
-        DEFAULT_FILTER: {}
-    })
     const [total, setTotal] = useState(0)
     const [pages, setPages] = useState([])
 
@@ -31,16 +28,7 @@ const Subscribe = () => {
             setTotal(res.data.total)
         })
     }
-    const fetchConfig = () => {
-        API.get('/config').then(data => {
-            const conf = data.data;
-            conf.DEFAULT_FILTER = JSON.parse(conf.DEFAULT_FILTER)
-            setConfig(conf);
-        })
-    }
-    useEffect(() => {
-        fetchConfig()
-    }, [])
+
 
     useEffect(() => {
         fetchCodes()
@@ -101,8 +89,7 @@ const Subscribe = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {codes.map((item, index) => (
-                    <CodeCard code={item} key={index} onRefresh={fetchCodes}
-                              defaultFilter={config.DEFAULT_FILTER}></CodeCard>
+                    <CodeCard code={item} key={index} onRefresh={fetchCodes}></CodeCard>
                 ))}
             </div>
             <div className="join mt-2">

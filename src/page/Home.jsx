@@ -6,8 +6,20 @@ import Actor from "./Actor";
 import Config from "./Config";
 import Profile from "./Profile";
 import SearchResult from "./SearchResult";
+import {useEffect} from "react";
+import API from "../utils/Api";
 
 const Home = () => {
+    useEffect(() => {
+        fetchConfig()
+    }, []);
+
+    const fetchConfig = () => {
+        API.get('/config').then(res => {
+            localStorage.setItem("config", JSON.stringify(res.data))
+        })
+    }
+
     return (
         <div className="flex flex-col">
             <NavBar/>

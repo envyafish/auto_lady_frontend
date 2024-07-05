@@ -1,18 +1,23 @@
-import subscribe from "../page/Subscribe";
 import Api from "../utils/Api";
 import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 const statusMap = {
     'COMPLETE': '已完成',
     'SUBSCRIBE': '订阅中',
-    'UN_SUBSCRIBE': '未订阅'
+    'UN_SUBSCRIBE': '未订阅',
+    'CANCEL': '未订阅'
 }
 const badgeMap = {
     'COMPLETE': 'accent',
     'SUBSCRIBE': 'primary',
-    'UN_SUBSCRIBE': 'neutral'
+    'UN_SUBSCRIBE': 'neutral',
+    'CANCEL': 'neutral'
 }
-const CodeCard = ({code, defaultFilter, onRefresh}) => {
+
+const IMAGE_PROXY_URL = import.meta.env.VITE_IMAGE_PROXY;
+const CodeCard = ({code, onRefresh}) => {
+
     const still_photo_arr = code.still_photo ? code.still_photo.split(',') : []
     const genres_arr = code.genres ? code.genres.split(',') : []
     const actors = code.casts ? code.casts.split(',') : []
@@ -20,14 +25,23 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
     const [subscribe, setSubscribe] = useState(
         {
             code: code.code,
-            filter: defaultFilter,
+            filter: code.filter ? JSON.parse(code.filter) : JSON.parse(localStorage.getItem("config"))['DEFAULT_FILTER'],
             mode: 'STRICT'
         }
     )
     const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState(statusMap[code.status])
     const [badge, setBadge] = useState(badgeMap[code.status])
+    const [imageMode, setImageMode] = useState(JSON.parse(localStorage.getItem("config"))['IMAGE_MODE'])
+    const navigate = useNavigate()
 
+    useEffect(() => {
+        setImageMode(JSON.parse(localStorage.getItem("config"))['IMAGE_MODE'])
+        setSubscribe({
+            ...subscribe,
+            filter: code.filter ? JSON.parse(code.filter) : JSON.parse(localStorage.getItem("config"))['DEFAULT_FILTER']
+        })
+    }, [])
 
     useEffect(() => {
         setStatus(statusMap[codeStatus])
@@ -90,26 +104,32 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const nextSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % still_photo_arr.length);
     };
 
     const prevSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + still_photo_arr.length) % still_photo_arr.length);
     };
 
 
+    const toSearch = (item) => {
+        navigate(`/app/search/${item}`)
+    };
     return (
         <div className="card bg-base-100 shadow-xl">
-            {/*<figure>*/}
-            {/*    <img*/}
-            {/*        referrerPolicy="no-referrer"*/}
-            {/*        src={'http://127.0.0.1:8000/v1/image-proxy?url=' + code.banner}*/}
-            {/*        className=""*/}
-            {/*    />*/}
-            {/*</figure>*/}
+            {['VISIBLE', 'BLUR'].includes(imageMode) &&
+                <figure>
+                    <img
+                        referrerPolicy="no-referrer"
+                        src={`${IMAGE_PROXY_URL}?url= ${code.banner}`}
+                        className={imageMode === 'BLUR' ? 'filter blur-sm' : ''}
+                    />
+                </figure>
+            }
+
             <div className="card-body">
                 <h2 className="card-title">
-                    {code.code}
+                    <span onClick={() => toSearch(code.code)} className="link">{code.code}</span>
                     <div className={`badge badge-sm badge-${badge}`}>{status}</div>
                     {code.is_exist_server && <div className={`badge badge-sm badge-success`}>已入库</div>}
                 </h2>
@@ -117,7 +137,8 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
                 <p className="text-sm">{code.title}</p>
                 <div>
                     {actors.map((item, index) => (
-                        <span className="badge badge-sm badge-outline badge-info mr-1" key={index}>{item}</span>
+                        <span className="badge badge-sm badge-outline badge-info mr-1 link" key={index}
+                              onClick={() => toSearch(item)}>{item}</span>
                     ))}
                     {genres_arr.map((item, index) => (
                         <span className="badge badge-sm badge-outline mr-1" key={index}>{item}</span>
@@ -127,9 +148,11 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
 
                 <div className="card-actions justify-end">
                     <div className="card-actions justify-end">
-                        <button className="btn btn-sm btn-outline btn-neutral"
-                                onClick={() => document.getElementById('stillPhotoModal-' + code.code).showModal()}>剧照
-                        </button>
+                        {['VISIBLE', 'BLUR'].includes(imageMode) &&
+                            <button className="btn btn-sm btn-outline btn-neutral"
+                                    onClick={() => document.getElementById('stillPhotoModal-' + code.code).showModal()}>剧照
+                            </button>
+                        }
                         <button className="btn btn-sm btn-outline btn-accent"
                                 onClick={() => document.getElementById('filterModal-' + code.code).showModal()}>订阅
                         </button>
@@ -144,16 +167,17 @@ const CodeCard = ({code, defaultFilter, onRefresh}) => {
             <dialog id={`stillPhotoModal-${code.code}`} className="modal modal-bottom flex justify-center items-center">
                 <div className="modal-box sm:w-7/12">
                     <div className="carousel rounded-box w-full">
-                        {/*{still_photo_arr.map((item, index) => (*/}
-                        {/*    <div*/}
-                        {/*        key={index}*/}
-                        {/*        className={`carousel-item w-full flex justify-center items-center ${index === currentIndex ? 'block' : 'hidden'}`}>*/}
-                        {/*        <img*/}
-                        {/*            src={item}*/}
-                        {/*            className="rounded-box max-w-full max-h-96 object-cover" alt={`Slide ${index + 1}`}*/}
-                        {/*        />*/}
-                        {/*    </div>*/}
-                        {/*))}*/}
+                        {still_photo_arr.map((item, index) => (
+                            <div
+                                key={index}
+                                className={`carousel-item w-full flex justify-center items-center ${index === currentIndex ? 'block' : 'hidden'}`}>
+                                <img
+                                    src={item}
+                                    className={`rounded-box max-w-full max-h-96 object-cover ${imageMode === 'BLUR' ? 'filter blur-sm' : ''}`}
+                                    alt={`Slide ${index + 1}`}
+                                />
+                            </div>
+                        ))}
                         <button className="btn btn-circle absolute top-1/2 left-0 transform -translate-y-1/2"
                                 onClick={prevSlide}>❮
                         </button>
