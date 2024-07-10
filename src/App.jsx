@@ -13,7 +13,9 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/app/*" element={<Home/>}/>
-                <Route path="*" element={<Navigate to={token ? "/app/subscribe" : "/login"} replace/>}/>
+                {/*<Route path="*" element={<Navigate to={token ? "/app/subscribe" : "/login"} replace/>}/>*/}
+                <Route path="/app" element={<Navigate to="/app/subscribe" replace/>}/>
+                <Route path="*" element={<Navigate to="/app/subscribe" replace/>}/>
             </Routes>
         </Router>
     );

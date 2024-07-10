@@ -2,6 +2,7 @@ import CodeCard from "../components/CodeCard";
 import {useEffect, useState} from "react";
 import Api from "../utils/Api";
 import API from "../utils/Api";
+import Pagination from "../components/Pagination";
 
 const subscribeStatus = {
     '全部': '',
@@ -12,18 +13,22 @@ const subscribeStatus = {
 const Subscribe = () => {
     const [activeTab, setActiveTab] = useState('全部');
     const [codes, setCodes] = useState([])
+    const [loading, setLoading] = useState(false)
     const [query, setQuery] = useState({
         page: 1,
-        size: 20,
+        size: 10,
         query: '',
         status: ''
     })
     const [total, setTotal] = useState(0)
-    const [pages, setPages] = useState([])
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
 
     const fetchCodes = () => {
         setCodes([])
+        setLoading(true)
         Api.post('/codes/list', query).then(res => {
+            setLoading(false)
             setCodes(res.data.data)
             setTotal(res.data.total)
         })
@@ -35,9 +40,15 @@ const Subscribe = () => {
     }, [query])
 
     useEffect(() => {
-        const totalPage = Math.ceil(total / query.size)
-        const numberList = Array.from({length: totalPage}, (_, index) => index + 1);
-        setPages(numberList)
+        setQuery({
+            ...query,
+            page: page
+        })
+    }, [page])
+
+
+    useEffect(() => {
+        setTotalPages(Math.ceil(total / query.size))
     }, [total]);
 
     const handleTabClick = (tab) => {
@@ -45,15 +56,10 @@ const Subscribe = () => {
             ...query,
             status: subscribeStatus[tab]
         })
+        setPage(1)
         setActiveTab(tab);
     };
 
-    const handlePageChange = (item) => {
-        setQuery({
-            ...query,
-            page: item
-        })
-    };
 
     return (
         <div>
@@ -87,25 +93,19 @@ const Subscribe = () => {
                     未订阅
                 </a>
             </div>
+            {
+                loading &&
+                <div className="flex items-center justify-center h-full pt-28">
+                    <span className="loading loading-dots loading-lg"></span>
+                </div>
+            }
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {codes.map((item, index) => (
                     <CodeCard code={item} key={index} onRefresh={fetchCodes}></CodeCard>
                 ))}
             </div>
             <div className="join mt-2">
-                {
-                    pages.map((item, index) => (
-                        <input
-                            className="join-item btn btn-square"
-                            type="radio"
-                            name="options"
-                            aria-label={item}
-                            key={index}
-                            defaultChecked={index === 0}
-                            onClick={() => handlePageChange(item)}
-                        />
-                    ))
-                }
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={(item) => setPage(item)}/>
             </div>
         </div>
 
