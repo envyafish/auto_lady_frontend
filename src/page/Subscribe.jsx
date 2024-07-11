@@ -11,7 +11,6 @@ const subscribeStatus = {
     '未订阅': 'UN_SUBSCRIBE'
 }
 const Subscribe = () => {
-    console.log(111)
     const [activeTab, setActiveTab] = useState('全部');
     const [codes, setCodes] = useState([])
     const [loading, setLoading] = useState(false)
@@ -22,7 +21,6 @@ const Subscribe = () => {
         status: ''
     })
     const [total, setTotal] = useState(0)
-    const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
 
     const fetchCodes = () => {
@@ -40,13 +38,6 @@ const Subscribe = () => {
         fetchCodes()
     }, [query])
 
-    useEffect(() => {
-        setQuery({
-            ...query,
-            page: page
-        })
-    }, [page])
-
 
     useEffect(() => {
         setTotalPages(Math.ceil(total / query.size))
@@ -55,9 +46,9 @@ const Subscribe = () => {
     const handleTabClick = (tab) => {
         setQuery({
             ...query,
-            status: subscribeStatus[tab]
+            status: subscribeStatus[tab],
+            page: 1
         })
-        setPage(1)
         setActiveTab(tab);
     };
 
@@ -106,7 +97,8 @@ const Subscribe = () => {
                 ))}
             </div>
             <div className="join mt-2">
-                <Pagination currentPage={page} totalPages={totalPages} onPageChange={(item) => setPage(item)}/>
+                <Pagination currentPage={query.page} totalPages={totalPages}
+                            onPageChange={(item) => setQuery({...query, page: item})}/>
             </div>
         </div>
 

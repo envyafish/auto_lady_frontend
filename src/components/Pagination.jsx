@@ -38,14 +38,14 @@ const Pagination = ({currentPage, totalPages, onPageChange}) => {
 
 
     return (
-        <div>
+        <div className="fixed bottom-2 left-2">
             {currentPage >= 4 &&
                 <input
                     className="join-item btn btn-square"
                     type="radio"
                     name="options"
                     aria-label="1"
-                    checked={currentPage === 1}
+                    defaultChecked={currentPage === 1}
                     onClick={() => onPageChange(1)}
                 />
             }
@@ -65,7 +65,7 @@ const Pagination = ({currentPage, totalPages, onPageChange}) => {
                         name="options"
                         aria-label={item}
                         key={index}
-                        checked={currentPage === item}
+                        defaultChecked={currentPage === item}
                         onClick={() => onPageChange(item)}
                     />
                 ))

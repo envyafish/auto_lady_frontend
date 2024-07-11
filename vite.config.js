@@ -14,6 +14,7 @@ export default defineConfig({
                 name: 'AutoLady',
                 short_name: 'AL',
                 description: 'AutoLady',
+                theme_color: "#000000",
                 icons: [
                     //添加图标， 注意路径和图像像素正确
                     {

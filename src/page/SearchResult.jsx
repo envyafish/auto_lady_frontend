@@ -20,10 +20,6 @@ const SearchResult = () => {
     })
 
     useEffect(() => {
-        complexSearch()
-    }, [])
-
-    useEffect(() => {
         setCodes([])
         setActors([])
         setTorrents([])
