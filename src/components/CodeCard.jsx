@@ -36,6 +36,10 @@ const CodeCard = ({code, onRefresh}) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        setCodeStatus(code.status)
+    },[code])
+
+    useEffect(() => {
         setImageMode(JSON.parse(localStorage.getItem("config"))['IMAGE_MODE'])
         setSubscribe({
             ...subscribe,

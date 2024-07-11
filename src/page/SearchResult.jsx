@@ -3,13 +3,12 @@ import CodeCard from "../components/CodeCard";
 import ActorCard from "../components/ActorCard";
 import {useParams} from "react-router-dom";
 import Api from "../utils/Api";
-import API from "../utils/Api";
 import Torrent from "../components/Torrent";
 import Alert from "../components/Alert";
 
 const SearchResult = () => {
     const {query} = useParams();
-    const [code, setCode] = useState(null)
+    const [codes, setCodes] = useState([])
     const [actors, setActors] = useState([])
     const [torrents, setTorrents] = useState([])
     const [loading, setLoading] = useState(false)
@@ -25,7 +24,7 @@ const SearchResult = () => {
     }, [])
 
     useEffect(() => {
-        setCode(null)
+        setCodes([])
         setActors([])
         setTorrents([])
         complexSearch()
@@ -35,7 +34,7 @@ const SearchResult = () => {
         setLoading(true)
         Api.get("/complex/search?query=" + query).then(res => {
             setLoading(false)
-            setCode(res.data.code)
+            setCodes(res.data.codes)
             setActors(res.data.actors)
             setTorrents(res.data.torrents)
         })
@@ -45,7 +44,7 @@ const SearchResult = () => {
         return undefined;
     };
 
-    const alertSuccess = () => {
+    const alertSuccess = (code) => {
         setAlert({
             message: '种子添加下载成功',
             type: 'success',
@@ -58,13 +57,14 @@ const SearchResult = () => {
                 isVisible: false
             })
         }, 3000); // 3秒后自动隐藏
-        if (code) {
-            const tempCode = {...code}
-            setCode(null)
-            setCode({
-                ...tempCode,
-                status: 'COMPLETE'
+
+        if (code && codes) {
+            codes.map((item, index) => {
+                if (code === item.code) {
+                    item.status = 'COMPLETE'
+                }
             })
+            setCodes(codes)
         }
     }
     return (
@@ -78,9 +78,12 @@ const SearchResult = () => {
                 isVisible={alert.isVisible}
             />
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
-                {code && <CodeCard code={code} onRefresh={nothingHappen}></CodeCard>}
+                {codes && codes.map((item, index) => (
+                    <CodeCard code={item} key={index} onRefresh={nothingHappen}></CodeCard>
+                ))}
+
             </div>
-            {code && actors && <div className="divider"></div>}
+            {codes && actors && <div className="divider"></div>}
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {actors && actors.map((item, index) => (
                     <ActorCard actor={item} key={index} onRefresh={nothingHappen}></ActorCard>
