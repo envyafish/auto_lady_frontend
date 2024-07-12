@@ -1,9 +1,13 @@
 import Api from "../utils/Api";
 
-const Torrent = ({torrent, onPushComplete}) => {
+const Torrent = ({torrent, onPushComplete, onDownloadFail}) => {
     const handleDownload = () => {
-        Api.get(`/torrents/download/manual?site=${torrent.site}&id=${torrent.id}&code_no=${torrent.code}`).then(res => {
-            onPushComplete(torrent.code)
+        Api.post('/torrents/download/manual', torrent).then(res => {
+            if (res.success) {
+                onPushComplete(torrent.code)
+            } else {
+                onDownloadFail(torrent)
+            }
         })
     };
     return (

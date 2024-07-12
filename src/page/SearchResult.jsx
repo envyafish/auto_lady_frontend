@@ -48,8 +48,7 @@ const SearchResult = () => {
         })
         setTimeout(() => {
             setAlert({
-                message: '',
-                type: 'success',
+                ...alert,
                 isVisible: false
             })
         }, 3000); // 3秒后自动隐藏
@@ -62,6 +61,20 @@ const SearchResult = () => {
             })
             setCodes(codes)
         }
+    }
+
+    const alertFail = (torrent) => {
+        setAlert({
+            message: '下载失败',
+            type: 'error',
+            isVisible: true
+        })
+        setTimeout(() => {
+            setAlert({
+                ...alert,
+                isVisible: false
+            })
+        }, 3000); // 3秒后自动隐藏
     }
     return (
         <div>
@@ -89,7 +102,8 @@ const SearchResult = () => {
             {actors && torrents && <div className="divider"></div>}
             <div className="mt-2">
                 {torrents && torrents.map((item, index) => (
-                    <Torrent torrent={item} key={index} onPushComplete={alertSuccess}></Torrent>
+                    <Torrent torrent={item} key={index} onPushComplete={alertSuccess}
+                             onDownloadFail={alertFail}></Torrent>
                 ))
                 }
             </div>

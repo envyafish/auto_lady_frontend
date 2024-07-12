@@ -1,6 +1,7 @@
 import Api from "../utils/Api";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import Alert from "./Alert";
 
 const statusMap = {
     'COMPLETE': '已完成',
@@ -16,7 +17,7 @@ const badgeMap = {
 }
 
 const IMAGE_PROXY_URL = import.meta.env.VITE_IMAGE_PROXY;
-const CodeCard = ({code, onRefresh}) => {
+const CodeCard = ({code}) => {
 
     const still_photo_arr = code.still_photo ? code.still_photo.split(',') : []
     const genres_arr = code.genres ? code.genres.split(',') : []
@@ -37,7 +38,7 @@ const CodeCard = ({code, onRefresh}) => {
 
     useEffect(() => {
         setCodeStatus(code.status)
-    },[code])
+    }, [code])
 
     useEffect(() => {
         setImageMode(JSON.parse(localStorage.getItem("config"))['IMAGE_MODE'])
@@ -56,9 +57,11 @@ const CodeCard = ({code, onRefresh}) => {
     const subCode = () => {
         setLoading(true)
         Api.post('/codes/sub', subscribe).then(res => {
-            setLoading(false)
-            setCodeStatus("SUBSCRIBE")
-            onRefresh()
+            if (res.success) {
+                setLoading(false)
+                setCodeStatus("SUBSCRIBE")
+                return (<Alert message={res.message} type="success" isVisible="true"></Alert>)
+            }
         })
     };
     const cancelCode = () => {
@@ -66,8 +69,6 @@ const CodeCard = ({code, onRefresh}) => {
         Api.delete('/codes/cancel?code_no=' + code.code).then(res => {
             setLoading(false)
             setCodeStatus("UN_SUBSCRIBE")
-            onRefresh()
-
         });
     };
 
