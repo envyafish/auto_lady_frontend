@@ -134,9 +134,11 @@ const CodeCard = ({code, onRefresh}) => {
             <div className="card-body">
                 <h2 className="card-title">
                     <span onClick={() => toSearch(code.code)} className="link">{code.code}</span>
-                    <div className={`badge badge-sm badge-${badge}`}>{status}</div>
-                    {code.is_exist_server && <div className={`badge badge-sm badge-success`}>已入库</div>}
                 </h2>
+                <div>
+                    <span className={`badge badge-sm mr-1 badge-${badge}`}>{status}</span>
+                    {code.is_exist_server && <span className={`badge badge-sm badge-success`}>已入库</span>}
+                </div>
                 <span className="mr-1">发售日期：{code.release_date}</span>
                 <p className="text-sm">{code.title}</p>
                 <div>

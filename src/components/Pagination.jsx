@@ -1,78 +1,57 @@
-import {useEffect, useState} from "react";
+// src/Pagination.js
+import React from 'react';
 
-const getPageNumbers = (current, total) => {
-    if (total === 0) {
-        return []
-    }
-    let startPage, endPage;
-    if (total <= 5) {
-        startPage = 1;
-        endPage = total;
-    } else {
-        if (current <= 3) {
-            startPage = 1;
-            endPage = 5;
-        } else if (current + 2 >= total) {
-            startPage = total - 4;
-            endPage = total;
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+    const getPages = () => {
+        const pages = [];
+        if (totalPages <= 10) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
         } else {
-            startPage = current - 2;
-            endPage = current + 2;
+            pages.push(1);
+            if (currentPage > 4) pages.push('...');
+            let startPage = Math.max(currentPage - 2, 2);
+            let endPage = Math.min(currentPage + 2, totalPages - 1);
+            for (let i = startPage; i <= endPage; i++) {
+                pages.push(i);
+            }
+            if (currentPage < totalPages - 3) pages.push('...');
+            pages.push(totalPages);
         }
-    }
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-    }
-    return pages;
-};
+        return pages;
+    };
 
-const Pagination = ({currentPage, totalPages, onPageChange}) => {
-    const [pageNumbers, setPageNumbers] = useState(getPageNumbers(currentPage, totalPages))
-    useEffect(() => {
-        setPageNumbers(getPageNumbers(currentPage, totalPages))
-    }, [currentPage]);
-    useEffect(() => {
-        setPageNumbers(getPageNumbers(currentPage, totalPages))
-    }, [totalPages]);
-
+    const pages = getPages();
 
     return (
-        <div className="fixed bottom-2 left-2">
-            {currentPage >= 4 &&
-                <input
-                    className="join-item btn btn-square"
-                    type="radio"
-                    name="options"
-                    aria-label="1"
-                    defaultChecked={currentPage === 1}
-                    onClick={() => onPageChange(1)}
-                />
-            }
-            {currentPage >= 5 &&
-                <input
-                    className="join-item btn btn-square disabled"
-                    type="radio"
-                    name="options"
-                    aria-label="..."
-                />
-            }
-            {
-                pageNumbers.map((item, index) => (
-                    <input
-                        className="join-item btn btn-square"
-                        type="radio"
-                        name="options"
-                        aria-label={item}
-                        key={index}
-                        defaultChecked={currentPage === item}
-                        onClick={() => onPageChange(item)}
-                    />
-                ))
-            }
-
+        <div className="join fixed bottom-2 left-2">
+            <button
+                className="join-item btn btn-sm"
+                disabled={currentPage === 1}
+                onClick={() => onPageChange(currentPage - 1)}
+            >
+                «
+            </button>
+            {pages.map((page, index) => (
+                <button
+                    key={index}
+                    className={`btn btn-sm join-item ${currentPage === page ? 'btn-active' : ''}`}
+                    onClick={() => typeof page === 'number' && onPageChange(page)}
+                    disabled={typeof page !== 'number'}
+                >
+                    {page}
+                </button>
+            ))}
+            <button
+                className="btn btn-sm join-item"
+                disabled={currentPage === totalPages}
+                onClick={() => onPageChange(currentPage + 1)}
+            >
+                »
+            </button>
         </div>
-    )
-}
+    );
+};
 
-export default Pagination
+export default Pagination;

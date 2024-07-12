@@ -57,7 +57,7 @@ const ActorCard = ({actor, onRefresh}) => {
                         </div>
                     </div>
                     <div
-                        className="chat-bubble">{`呀哈喽，我是${actor.name}，${actor.birth ? `出生于${formatDateToChinese(actor.birth)}，` : ``}
+                        className="chat-bubble">{`Hello，我是${actor.name}，${actor.birth ? `出生于${formatDateToChinese(actor.birth)}，` : ``}
                         ${actor.height ? `我的身高是${actor.height},` : ``}
                         ${actor.bust ? `胸围${actor.bust},` : ``}
                         ${actor.waist ? `腰围${actor.waist},` : ``}

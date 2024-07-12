@@ -21,10 +21,12 @@ const loadSort = (sort_arr) => {
 }
 
 const fields = {
-    "pt": [
+    "site": [
         {"name": "MTEAM_API_KEY", "label": "馒头令牌"},
         {"name": "FSM_API_KEY", "label": "飞天拉面神教APITOKEN"},
-        {"name": "FSM_PASSKEY", "label": "飞天拉面神教PASSKEY"}
+        {"name": "FSM_PASSKEY", "label": "飞天拉面神教PASSKEY"},
+        {"name": "LIBRARY_COOKIE", "label": "图书馆cookie"},
+        {"name": "BUS_COOKIE", "label": "公交车cookie"},
     ],
     "server": [
         {"name": "EMBY_URL", "label": "EMBY地址"},
@@ -40,25 +42,75 @@ const fields = {
         {"name": "WECHAT_CORP_SECRET", "label": "微信企业密钥"},
         {"name": "WECHAT_AGENT_ID", "label": "微信应用ID"},
         {"name": "WECHAT_PROXY", "label": "微信代理"},
+        {"name": "WECHAT_PHOTO", "label": "微信推送图片（外网可以访问）"},
         {"name": "TELEGRAM_BOT_TOKEN", "label": "Telegram Bot Token"},
         {"name": "TELEGRAM_CHAT_ID", "label": "Telegram Chat ID"}
     ],
     "download": [
-        {"name": "QBITTORRENT_HOST", "label": "qbittorent host"},
-        {"name": "QBITTORRENT_PORT", "label": "qbittorent port"},
-        {"name": "QBITTORRENT_USERNAME", "label": "qbittorent 用户名"},
-        {"name": "QBITTORRENT_PASSWORD", "label": "qbittorent 密码"},
-        {"name": "QBITTORRENT_DOWNLOAD_PATH", "label": "qbittorent 下载地址"},
-        {"name": "QBITTORRENT_CATEGORY", "label": "qbittorent 下载分类"}
+        {"name": "QBITTORRENT_URL", "label": "qbittorrent地址"},
+        {"name": "QBITTORRENT_USERNAME", "label": "qbittorrent用户名"},
+        {"name": "QBITTORRENT_PASSWORD", "label": "qbittorrent密码"},
+        {"name": "QBITTORRENT_DOWNLOAD_PATH", "label": "qbittorrent下载地址"},
+        {"name": "QBITTORRENT_CATEGORY", "label": "qbittorrent下载分类"},
+        {"name": "TRANSMISSION_URL", "label": "Transmission地址"},
+        {"name": "TRANSMISSION_USERNAME", "label": "Transmission用户名"},
+        {"name": "TRANSMISSION_PASSWORD", "label": "Transmission密码"},
+        {"name": "TRANSMISSION_DOWNLOAD_PATH", "label": "Transmission下载地址"},
+        {"name": "TRANSMISSION_LABEL", "label": "Transmission标签"}
     ],
     "other": [
-        {"name": "PROXY", "label": "代理地址"}
+        {"name": "PROXY", "label": "代理地址"},
+        {"name": "RANK_PAGE", "label": "榜单自动订阅页数(0不订阅)"}
     ]
 }
 
 const Config = () => {
-    const [config, setConfig] = useState(JSON.parse(localStorage.getItem("config")));
-    const [sort, setSort] = useState(loadSort(JSON.parse(localStorage.getItem("config"))['DEFAULT_SORT']));
+    const [config, setConfig] = useState({
+        "EMBY_URL": "",
+        "EMBY_API_KEY": "",
+        "PLEX_URL": "",
+        "PLEX_TOKEN": "",
+        "JELLYFIN_URL": "",
+        "JELLYFIN_API_KEY": "",
+        "JELLYFIN_USER": "",
+        "QBITTORRENT_URL": "",
+        "QBITTORRENT_USERNAME": "",
+        "QBITTORRENT_PASSWORD": "",
+        "QBITTORRENT_DOWNLOAD_PATH": "",
+        "QBITTORRENT_CATEGORY": "",
+        "TRANSMISSION_URL": "",
+        "TRANSMISSION_USERNAME": "",
+        "TRANSMISSION_PASSWORD": "",
+        "TRANSMISSION_DOWNLOAD_PATH": "",
+        "TRANSMISSION_LABEL": "",
+        "FSM_API_KEY": "",
+        "FSM_PASSKEY": "",
+        "MTEAM_API_KEY": "",
+        "LIBRARY_COOKIE": "",
+        "BUS_COOKIE": "",
+        "WECHAT_CORP_ID": "",
+        "WECHAT_CORP_SECRET": "",
+        "WECHAT_AGENT_ID": "",
+        "WECHAT_PROXY": "",
+        "WECHAT_PHOTO": "",
+        "TELEGRAM_BOT_TOKEN": "",
+        "TELEGRAM_CHAT_ID": "",
+        "PROXY": "",
+        "IMAGE_MODE": "",
+        "DEFAULT_FILTER": {
+            "only_chinese": false,
+            "only_uc": false,
+            "only_uhd": false
+        },
+        "DEFAULT_SORT": [
+            "uhd",
+            "uc",
+            "chinese",
+            "seeders"
+        ],
+        "RANK_PAGE": "1"
+    });
+    const [sort, setSort] = useState(initialSort);
     const [alert, setAlert] = useState({
         message: '',
         type: 'success',
@@ -128,10 +180,17 @@ const Config = () => {
         })
     };
 
+    const fetchConfig = () => {
+        API.get('/config').then(res => {
+            setConfig(res.data)
+            setSort(loadSort(res.data.DEFAULT_SORT))
+        })
+    }
+
+
     useEffect(() => {
-        setConfig(JSON.parse(localStorage.getItem("config")))
-        setSort(loadSort(JSON.parse(localStorage.getItem("config"))['DEFAULT_SORT']))
-    },[])
+        fetchConfig()
+    }, [])
     return (
         <div>
             <Alert
@@ -140,12 +199,12 @@ const Config = () => {
                 isVisible={alert.isVisible}
             />
             <div role="tablist" className="tabs tabs-lifted">
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="PT" defaultChecked/>
+                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="站点" defaultChecked/>
                 <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
                     <form>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             {
-                                fields.pt.map((item) => (
+                                fields.site.map((item) => (
                                     <label className="form-control w-full max-w-xs" key={item.name}>
                                         <div className="label">
                                             <span className="label-text">{item.label}</span>
