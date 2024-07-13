@@ -191,6 +191,7 @@ const Config = () => {
     useEffect(() => {
         fetchConfig()
     }, [])
+
     return (
         <div>
             <Alert

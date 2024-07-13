@@ -60,7 +60,6 @@ const CodeCard = ({code}) => {
             if (res.success) {
                 setLoading(false)
                 setCodeStatus("SUBSCRIBE")
-                return (<Alert message={res.message} type="success" isVisible="true"></Alert>)
             }
         })
     };
@@ -258,7 +257,6 @@ const CodeCard = ({code}) => {
                     </form>
                     <div className="modal-action">
                         <form method="dialog">
-                            {/* if there is a button in form, it will close the modal */}
                             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                             <button className="btn" onClick={() => subCode()}>确认</button>
                         </form>
@@ -266,7 +264,7 @@ const CodeCard = ({code}) => {
                 </div>
             </dialog>
             {
-                loading && <span className="loading loading-bars loading-xs"></span>
+                loading && <span className="loading loading-bars loading-sm"></span>
             }
         </div>
     );
