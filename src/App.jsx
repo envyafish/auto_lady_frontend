@@ -11,6 +11,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/" element={<Navigate to="/app/subscribe" replace/>}/>
                 <Route path="/app" element={<Navigate to="/app/subscribe" replace/>}/>
                 <Route
                     path="/app/*"
