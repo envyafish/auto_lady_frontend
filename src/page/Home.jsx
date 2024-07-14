@@ -1,5 +1,5 @@
 import NavBar from "../components/NavBar";
-import {Route, Routes} from "react-router-dom";
+import {Navigate, Route, Routes} from "react-router-dom";
 import Subscribe from "./Subscribe";
 import Rank from "./Rank";
 import Actor from "./Actor";

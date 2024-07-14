@@ -60,6 +60,7 @@ const fields = {
     ],
     "other": [
         {"name": "PROXY", "label": "代理地址"},
+        {"name": "FLARE_SOLVERR_URL", "label": "flaresolverr地址"},
         {"name": "RANK_PAGE", "label": "榜单自动订阅页数(0不订阅)"}
     ]
 }
@@ -108,7 +109,8 @@ const Config = () => {
             "chinese",
             "seeders"
         ],
-        "RANK_PAGE": "1"
+        "RANK_PAGE": "1",
+        "FLARE_SOLVERR_URL":""
     });
     const [sort, setSort] = useState(initialSort);
     const [alert, setAlert] = useState({
