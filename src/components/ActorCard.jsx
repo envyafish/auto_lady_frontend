@@ -1,9 +1,10 @@
 import Api from "../utils/Api";
 import {useState} from "react";
+import {useAlert} from "react-alert";
 
 const IMAGE_PROXY_URL = import.meta.env.VITE_IMAGE_PROXY;
-const ActorCard = ({actor, onRefresh}) => {
-
+const ActorCard = ({actor}) => {
+    const alert = useAlert()
     const [limitDate, setLimitDate] = useState('')
 
     const [isSub, setIsSub] = useState(actor.is_sub)
@@ -12,18 +13,15 @@ const ActorCard = ({actor, onRefresh}) => {
         actor.limit_date = limitDate
         Api.post('/actors/sub', actor).then(res => {
             setIsSub(true)
-            onRefresh()
+            alert.success(res.message)
+        }).catch(e => {
+            alert.error("服务器异常");
         })
     };
     const handleLimitDateChange = (e) => {
         setLimitDate(e.target.value)
     };
-    const cancelActor = () => {
-        Api.delete('/actors/cancel?code_no=' + actor.code).then(res => {
-            setIsSub(false)
-            onRefresh()
-        });
-    };
+
     const formatDateToChinese = (dateString) => {
         // 创建 Date 对象
         const date = new Date(dateString);
@@ -37,8 +35,18 @@ const ActorCard = ({actor, onRefresh}) => {
         return `${year}年${month}月${day}日`;
     }
 
+    const cancelActor = () => {
+        Api.delete('/actors/cancel', actor).then(res => {
+            if(res.success){
+                setIsSub(true)
+                alert.success(res.message)
+            }
+        }).catch(e => {
+            alert.error("服务器异常");
+        })
+    };
     return (
-        <div className="card card-side bg-base-100 shadow-xl">
+        <div className="card card-side bg-base-100 shadow-xl card-bordered card-compact">
             <figure>
                 <img
                     src={`${IMAGE_PROXY_URL}?url= ${actor.photo}`}

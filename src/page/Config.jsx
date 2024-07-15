@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import API from "../utils/Api";
-import Alert from "../components/Alert";
+import {useAlert} from "react-alert";
 
 const initialSort = [
     {id: 'uc', content: '无码'},
@@ -110,16 +110,10 @@ const Config = () => {
             "seeders"
         ],
         "RANK_PAGE": "1",
-        "FLARE_SOLVERR_URL":""
+        "FLARE_SOLVERR_URL": ""
     });
     const [sort, setSort] = useState(initialSort);
-    const [alert, setAlert] = useState({
-        message: '',
-        type: 'success',
-        isVisible: false
-
-    });
-
+    const alert = useAlert()
     const moveItem = (index, direction) => {
         const newItems = Array.from(sort);
         const [movedItem] = newItems.splice(index, 1);
@@ -159,20 +153,13 @@ const Config = () => {
     }
 
     const saveConfig = () => {
-        API.post('/config', config).then((data) => {
-            localStorage.setItem("config", JSON.stringify(config))
-            setAlert({
-                message: data.message,
-                type: 'success',
-                isVisible: true
-            })
-            setTimeout(() => {
-                setAlert({
-                    message: '',
-                    type: 'success',
-                    isVisible: false
-                })
-            }, 3000); // 3秒后自动隐藏
+        API.post('/config', config).then(res => {
+            if (res.success) {
+                localStorage.setItem("config", JSON.stringify(config))
+                alert.success(res.message)
+            }
+        }).catch(e => {
+            alert.error("服务器异常");
         })
     };
     const handleImageModeChange = (e) => {
@@ -184,8 +171,12 @@ const Config = () => {
 
     const fetchConfig = () => {
         API.get('/config').then(res => {
-            setConfig(res.data)
-            setSort(loadSort(res.data.DEFAULT_SORT))
+            if (res.success) {
+                setConfig(res.data)
+                setSort(loadSort(res.data.DEFAULT_SORT))
+            }
+        }).catch(e => {
+            alert.error("服务器异常");
         })
     }
 
@@ -196,11 +187,6 @@ const Config = () => {
 
     return (
         <div>
-            <Alert
-                message={alert.message}
-                type={alert.type}
-                isVisible={alert.isVisible}
-            />
             <div role="tablist" className="tabs tabs-lifted">
                 <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="站点" defaultChecked/>
                 <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">

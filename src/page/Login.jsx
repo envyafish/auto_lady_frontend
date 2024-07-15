@@ -1,45 +1,28 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import Alert from "../components/Alert";
 import Api from "../utils/Api";
+import {useAlert} from "react-alert";
 
 const Login = () => {
+    const alert = useAlert()
     const navigate = useNavigate()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [alert, setAlert] = useState({
-        message: '',
-        type: 'success',
-        isVisible: false
 
-    });
     const doLogin = () => {
-        Api.get(`/login?username=${username}&password=${password}`).then((res) => {
+        Api.get(`/login?username=${username}&password=${password}`).then(res => {
             if (res.success) {
                 localStorage.setItem("token", res.data.token)
-                location.href='/app'
+                location.href = '/app'
             } else {
-                setAlert({
-                    message: res.message,
-                    type: 'error',
-                    isVisible: true
-                })
-                setTimeout(() => {
-                    setAlert({
-                        ...alert,
-                        isVisible: false
-                    })
-                }, 3000);
+                alert.error(res.message);
             }
+        }).catch(e => {
+            alert.error("服务器异常");
         })
     };
     return (
         <div>
-            <Alert
-                message={alert.message}
-                type={alert.type}
-                isVisible={alert.isVisible}
-            />
             <div
                 className="hero min-h-screen"
                 style={{

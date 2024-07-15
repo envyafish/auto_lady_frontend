@@ -1,7 +1,7 @@
 import Api from "../utils/Api";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import Alert from "./Alert";
+import {useAlert} from 'react-alert';
 
 const statusMap = {
     'COMPLETE': '已完成',
@@ -18,7 +18,7 @@ const badgeMap = {
 
 const IMAGE_PROXY_URL = import.meta.env.VITE_IMAGE_PROXY;
 const CodeCard = ({code}) => {
-
+    const alert = useAlert();
     const still_photo_arr = code.still_photo ? code.still_photo.split(',') : []
     const genres_arr = code.genres ? code.genres.split(',') : []
     const actors = code.casts ? code.casts.split(',') : []
@@ -30,7 +30,6 @@ const CodeCard = ({code}) => {
             mode: 'STRICT'
         }
     )
-    const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState(statusMap[code.status])
     const [badge, setBadge] = useState(badgeMap[code.status])
     const [imageMode, setImageMode] = useState(JSON.parse(localStorage.getItem("config"))['IMAGE_MODE'])
@@ -55,20 +54,23 @@ const CodeCard = ({code}) => {
 
 
     const subCode = () => {
-        setLoading(true)
         Api.post('/codes/sub', subscribe).then(res => {
             if (res.success) {
-                setLoading(false)
                 setCodeStatus("SUBSCRIBE")
+                alert.success(res.message);
             }
+        }).catch(e => {
+            alert.error("服务器异常");
         })
+
     };
     const cancelCode = () => {
-        setLoading(true)
         Api.delete('/codes/cancel?code_no=' + code.code).then(res => {
-            setLoading(false)
             setCodeStatus("UN_SUBSCRIBE")
-        });
+            alert.success(res.message);
+        }).catch(e => {
+            alert.error("服务器异常");
+        })
     };
 
     const handleChineseChange = (e) => {
@@ -120,7 +122,7 @@ const CodeCard = ({code}) => {
         navigate(`/app/search/${item}`)
     };
     return (
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-base-100 shadow-xl card-bordered card-compact" >
             {['VISIBLE', 'BLUR'].includes(imageMode) &&
                 <figure>
                     <img
@@ -170,34 +172,35 @@ const CodeCard = ({code}) => {
                     </div>
                 </div>
             </div>
-            <dialog id={`stillPhotoModal-${code.code}`} className="modal modal-bottom flex justify-center items-center">
-                <div className="modal-box sm:w-7/12">
-                    <div className="carousel rounded-box w-full">
-                        {still_photo_arr.map((item, index) => (
-                            <div
-                                key={index}
-                                className={`carousel-item w-full flex justify-center items-center ${index === currentIndex ? 'block' : 'hidden'}`}>
-                                <img
-                                    src={item}
-                                    className={`rounded-box max-w-full max-h-96 object-cover ${imageMode === 'BLUR' ? 'filter blur-sm' : ''}`}
-                                    alt={`Slide ${index + 1}`}
-                                />
-                            </div>
-                        ))}
-                        <button className="btn btn-circle absolute top-1/2 left-0 transform -translate-y-1/2"
-                                onClick={prevSlide}>❮
-                        </button>
-                        <button className="btn btn-circle absolute top-1/2 right-0 transform -translate-y-1/2"
-                                onClick={nextSlide}>❯
-                        </button>
+            {['VISIBLE', 'BLUR'].includes(imageMode) &&
+                <dialog id={`stillPhotoModal-${code.code}`}
+                        className="modal modal-bottom flex justify-center items-center">
+                    <div className="modal-box sm:w-7/12">
+                        <div className="carousel rounded-box w-full">
+                            {still_photo_arr.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className={`carousel-item w-full flex justify-center items-center ${index === currentIndex ? 'block' : 'hidden'}`}>
+                                    <img
+                                        src={item}
+                                        className={`rounded-box max-w-full max-h-96 object-cover ${imageMode === 'BLUR' ? 'filter blur-sm' : ''}`}
+                                        alt={`Slide ${index + 1}`}
+                                    />
+                                </div>
+                            ))}
+                            <button className="btn btn-circle absolute top-1/2 left-0 transform -translate-y-1/2"
+                                    onClick={prevSlide}>❮
+                            </button>
+                            <button className="btn btn-circle absolute top-1/2 right-0 transform -translate-y-1/2"
+                                    onClick={nextSlide}>❯
+                            </button>
+                        </div>
+                        <form method="dialog">
+                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
                     </div>
-                    <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
-                </div>
-
-
-            </dialog>
+                </dialog>
+            }
             <dialog id={`cancelConfirmModal-${code.code}`} className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">取消</h3>
@@ -263,9 +266,6 @@ const CodeCard = ({code}) => {
                     </div>
                 </div>
             </dialog>
-            {
-                loading && <span className="loading loading-bars loading-sm"></span>
-            }
         </div>
     );
 };

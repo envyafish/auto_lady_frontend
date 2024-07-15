@@ -12,7 +12,7 @@ export default defineConfig({
             base: '/',
             manifest: {
                 name: 'AutoLady',
-                short_name: 'AL',
+                short_name: 'AutoLady',
                 description: 'AutoLady',
                 theme_color: "#000000",
                 icons: [
@@ -33,7 +33,7 @@ export default defineConfig({
                         urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
                         handler: 'CacheFirst',
                         options: {
-                            cacheName: 'wisbayar-images',
+                            cacheName: 'image-cache',
                             expiration: {
                                 // 最多30个图
                                 maxEntries: 30,
@@ -44,7 +44,7 @@ export default defineConfig({
                         urlPattern: /.*\.js.*/,
                         handler: 'StaleWhileRevalidate',
                         options: {
-                            cacheName: 'wisbayar-js',
+                            cacheName: 'js-cache',
                             expiration: {
                                 maxEntries: 30, // 最多缓存30个，超过的按照LRU原则删除
                                 maxAgeSeconds: 30 * 24 * 60 * 60,
@@ -58,7 +58,7 @@ export default defineConfig({
                         urlPattern: /.*\.css.*/,
                         handler: 'StaleWhileRevalidate',
                         options: {
-                            cacheName: 'wisbayar-css',
+                            cacheName: 'css-cache',
                             expiration: {
                                 maxEntries: 20,
                                 maxAgeSeconds: 30 * 24 * 60 * 60,
@@ -72,7 +72,7 @@ export default defineConfig({
                         urlPattern: /.*\.html.*/,
                         handler: 'StaleWhileRevalidate',
                         options: {
-                            cacheName: 'wisbayar-html',
+                            cacheName: 'html-cache',
                             expiration: {
                                 maxEntries: 20,
                                 maxAgeSeconds: 30 * 24 * 60 * 60,
@@ -82,11 +82,11 @@ export default defineConfig({
                             },
                         },
                     },
-                ],
+                ]
             },
-            devOptions: {
-                enabled: true,
-            }
+            // devOptions: {
+            //     enabled: true,
+            // }
         })
     ],
     server: {

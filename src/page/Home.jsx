@@ -8,15 +8,21 @@ import Profile from "./Profile";
 import SearchResult from "./SearchResult";
 import {useEffect} from "react";
 import API from "../utils/Api";
+import {useAlert} from "react-alert";
 
 const Home = () => {
+    const alert = useAlert()
     useEffect(() => {
         fetchConfig()
     }, []);
 
     const fetchConfig = () => {
         API.get('/config').then(res => {
-            localStorage.setItem("config", JSON.stringify(res.data))
+            if (res.success) {
+                localStorage.setItem("config", JSON.stringify(res.data))
+            }
+        }).catch(e => {
+            alert.error("服务器异常");
         })
     }
 

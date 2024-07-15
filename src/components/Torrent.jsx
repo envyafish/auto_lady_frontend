@@ -1,17 +1,21 @@
 import Api from "../utils/Api";
+import {useAlert} from "react-alert";
 
-const Torrent = ({torrent, onPushComplete, onDownloadFail}) => {
+const Torrent = ({torrent}) => {
+    alert = useAlert()
     const handleDownload = () => {
         Api.post('/torrents/download/manual', torrent).then(res => {
             if (res.success) {
-                onPushComplete(torrent.code)
+                alert.success(res.message)
             } else {
-                onDownloadFail(torrent)
+                alert.error(res.message)
             }
+        }).catch(e => {
+            alert.error("服务器异常");
         })
     };
     return (
-        <div className="card bg-base-100 w-full shadow-xl mt-2">
+        <div className="card bg-base-100 w-full shadow-xl mt-2 card-bordered card-compact">
             <div className="card-body">
                 <p>{torrent.title}</p>
                 <div>
