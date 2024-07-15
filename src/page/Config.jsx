@@ -101,7 +101,10 @@ const Config = () => {
         "DEFAULT_FILTER": {
             "only_chinese": false,
             "only_uc": false,
-            "only_uhd": false
+            "only_uhd": false,
+            "exclude_uhd": true,
+            "min_size": "",
+            "max_size": ""
         },
         "DEFAULT_SORT": [
             "uhd",
@@ -133,6 +136,17 @@ const Config = () => {
         });
     };
 
+    const handleSizeChange = (event) => {
+        const {name, value} = event.target;
+        setConfig({
+            ...config,
+            DEFAULT_FILTER: {
+                ...config.DEFAULT_FILTER,
+                [name]: value
+            }
+        });
+    };
+
     const handleChineseChange = (e) => {
         setConfig({
             ...config,
@@ -148,9 +162,25 @@ const Config = () => {
     const handleUHDChange = (e) => {
         setConfig({
             ...config,
-            DEFAULT_FILTER: {...config.DEFAULT_FILTER, only_uhd: e.target.checked}
+            DEFAULT_FILTER: {
+                ...config.DEFAULT_FILTER,
+                only_uhd: e.target.checked,
+                exclude_uhd: e.target.checked && config.DEFAULT_FILTER.exclude_uhd ? false : config.DEFAULT_FILTER.exclude_uhd
+            }
         })
+
+
     }
+    const handleExcludeUHDChange = (e) => {
+        setConfig({
+            ...config,
+            DEFAULT_FILTER: {
+                ...config.DEFAULT_FILTER,
+                exclude_uhd: e.target.checked,
+                only_uhd: e.target.checked && config.DEFAULT_FILTER.only_uhd ? false : config.DEFAULT_FILTER.only_uhd
+            }
+        })
+    };
 
     const saveConfig = () => {
         API.post('/config', config).then(res => {
@@ -185,210 +215,187 @@ const Config = () => {
         fetchConfig()
     }, [])
 
+
     return (
-        <div>
-            <div role="tablist" className="tabs tabs-lifted">
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="站点" defaultChecked/>
-                <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                    <form>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            {
-                                fields.site.map((item) => (
-                                    <label className="form-control w-full max-w-xs" key={item.name}>
-                                        <div className="label">
-                                            <span className="label-text">{item.label}</span>
-                                        </div>
-                                        <input type="text" name={item.name}
-                                               value={config ? config[item.name] : ''}
-                                               onChange={handleChange}
-                                               className="input input-sm input-bordered w-full max-w-xs"/>
-                                    </label>
-                                ))
-                            }
-
-                        </div>
-                    </form>
-                </div>
-
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="服务器"/>
-                <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                    <form>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-                            {
-                                fields.server.map((item) => (
-                                    <label className="form-control w-full max-w-xs" key={item.name}>
-                                        <div className="label">
-                                            <span className="label-text">{item.label}</span>
-                                        </div>
-                                        <input type="text" name={item.name}
-                                               value={config ? config[item.name] : ''}
-                                               onChange={handleChange}
-                                               className="input input-sm input-bordered w-full max-w-xs"/>
-                                    </label>
-                                ))
-                            }
-                        </div>
-                    </form>
-                </div>
-
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="推送"/>
-                <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                    <form>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            {
-                                fields.notify.map((item) => (
-                                    <label className="form-control w-full max-w-xs" key={item.name}>
-                                        <div className="label">
-                                            <span className="label-text">{item.label}</span>
-                                        </div>
-                                        <input type="text" name={item.name}
-                                               value={config ? config[item.name] : ''}
-                                               onChange={handleChange}
-                                               className="input input-sm input-bordered w-full max-w-xs"/>
-                                    </label>
-                                ))
-                            }
-                        </div>
-                    </form>
-                </div>
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="下载"/>
-                <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                    <form>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            {
-                                fields.download.map((item) => (
-                                    <label className="form-control w-full max-w-xs" key={item.name}>
-                                        <div className="label">
-                                            <span className="label-text">{item.label}</span>
-                                        </div>
-                                        <input type="text" name={item.name}
-                                               value={config ? config[item.name] : ''}
-                                               onChange={handleChange}
-                                               className="input input-sm input-bordered w-full max-w-xs"/>
-                                    </label>
-                                ))
-                            }
-
-                        </div>
-                    </form>
-                </div>
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="规则"/>
-                <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                    <form>
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                            <div className="form-control">
-                                <label className="label cursor-pointer">
-                                    <span className="label-text">仅中文</span>
-                                    <input type="checkbox" className="toggle toggle-sm"
-                                           checked={config.DEFAULT_FILTER.only_chinese}
-                                           onChange={handleChineseChange}/>
-                                </label>
+        <div className="container mx-auto p-4">
+            <div className="space-y-4">
+                <div className="divider">站点</div>
+                {
+                    fields.site.map((item) => (
+                        <label className="form-control w-full" key={item.name}>
+                            <div className="label">
+                                <span className="label-text">{item.label}</span>
                             </div>
-                            <div className="form-control">
-                                <label className="label cursor-pointer">
-                                    <span className="label-text">仅无码</span>
-                                    <input type="checkbox" className="toggle toggle-sm"
-                                           checked={config.DEFAULT_FILTER.only_uc}
-                                           onChange={handleUCChange}/>
-                                </label>
+                            <input type="text" name={item.name}
+                                   value={config ? config[item.name] : ''}
+                                   onChange={handleChange}
+                                   className="input input-sm input-bordered w-full"/>
+                        </label>
+                    ))
+                }
+                <div className="divider">服务器</div>
+                {
+                    fields.server.map((item) => (
+                        <label className="form-control w-full" key={item.name}>
+                            <div className="label">
+                                <span className="label-text">{item.label}</span>
                             </div>
-                            <div className="form-control">
-                                <label className="label cursor-pointer">
-                                    <span className="label-text">仅UHD</span>
-                                    <input type="checkbox" className="toggle toggle-sm"
-                                           checked={config.DEFAULT_FILTER.only_uhd}
-                                           onChange={handleUHDChange}/>
-                                </label>
+                            <input type="text" name={item.name}
+                                   value={config ? config[item.name] : ''}
+                                   onChange={handleChange}
+                                   className="input input-sm input-bordered w-full"/>
+                        </label>
+                    ))
+                }
+                <div className="divider">消息</div>
+                {
+                    fields.notify.map((item) => (
+                        <label className="form-control w-full" key={item.name}>
+                            <div className="label">
+                                <span className="label-text">{item.label}</span>
                             </div>
-                        </div>
-                    </form>
-                    <div className="divider"></div>
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                        <div>
-                            {sort.map((item, index) => (
-                                <div key={item.id} className="mb-2">
-                                    <label className="label">
-                                        <label className="label-text w-12">{item.content}</label>
-                                        <div>
-                                            <button
-                                                className="btn btn-sm btn-primary"
-                                                onClick={() => moveItem(index, -1)}
-                                                disabled={index === 0}
-                                            >
-                                                上移
-                                            </button>
-                                            <button
-                                                className="btn btn-sm btn-secondary ml-2"
-                                                onClick={() => moveItem(index, 1)}
-                                                disabled={index === sort.length - 1}
-                                            >
-                                                下移
-                                            </button>
-                                        </div>
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
+                            <input type="text" name={item.name}
+                                   value={config ? config[item.name] : ''}
+                                   onChange={handleChange}
+                                   className="input input-sm input-bordered w-full"/>
+                        </label>
+                    ))
+                }
+                <div className="divider">下载器</div>
+                {
+                    fields.download.map((item) => (
+                        <label className="form-control w-full" key={item.name}>
+                            <div className="label">
+                                <span className="label-text">{item.label}</span>
+                            </div>
+                            <input type="text" name={item.name}
+                                   value={config ? config[item.name] : ''}
+                                   onChange={handleChange}
+                                   className="input input-sm input-bordered w-full"/>
+                        </label>
+                    ))
+                }
+                <div className="divider">过滤</div>
+                <div className="form-control">
+                    <label className="label cursor-pointer">
+                        <span className="label-text">仅中文</span>
+                        <input type="checkbox" className="toggle toggle-sm"
+                               checked={config.DEFAULT_FILTER.only_chinese}
+                               onChange={handleChineseChange}/>
+                    </label>
+                </div>
+                <div className="form-control">
+                    <label className="label cursor-pointer">
+                        <span className="label-text">仅无码</span>
+                        <input type="checkbox" className="toggle toggle-sm"
+                               checked={config.DEFAULT_FILTER.only_uc}
+                               onChange={handleUCChange}/>
+                    </label>
+                </div>
+                <div className="form-control">
+                    <label className="label cursor-pointer">
+                        <span className="label-text">仅UHD</span>
+                        <input type="checkbox" className="toggle toggle-sm"
+                               checked={config.DEFAULT_FILTER.only_uhd}
+                               onChange={handleUHDChange}/>
+                    </label>
+                </div>
+                <div className="form-control">
+                    <label className="label cursor-pointer">
+                        <span className="label-text">排除UHD</span>
+                        <input type="checkbox" className="toggle toggle-sm"
+                               checked={config.DEFAULT_FILTER.exclude_uhd}
+                               onChange={handleExcludeUHDChange}/>
+                    </label>
+                </div>
+                <label className="form-control w-full">
+                    <div className="label">
+                        <span className="label-text">最小体积(MB)</span>
                     </div>
-                </div>
-                <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="其他"/>
-                <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                    <form>
-                        <div className="grid grid-cols-1 gap-4">
-                            <label className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">图片模式</span>
-                                </div>
-                                <div className="form-control">
-                                    <label className="label cursor-pointer">
-                                        <span className="label-text">无图</span>
-                                        <input type="radio" name="radio-10" className="radio checked:bg-red-500"
-                                               value="INVISIBLE" checked={config.IMAGE_MODE === "INVISIBLE"}
-                                               onChange={handleImageModeChange}/>
-                                    </label>
-                                </div>
-                                <div className="form-control">
-                                    <label className="label cursor-pointer">
-                                        <span className="label-text">有图</span>
-                                        <input type="radio" name="radio-10" className="radio checked:bg-blue-500"
-                                               value="VISIBLE" checked={config.IMAGE_MODE === "VISIBLE"}
-                                               onChange={handleImageModeChange}/>
-                                    </label>
-                                </div>
-                                <div className="form-control">
-                                    <label className="label cursor-pointer">
-                                        <span className="label-text">模糊</span>
-                                        <input type="radio" name="radio-10" className="radio checked:bg-yellow-500"
-                                               value="BLUR" checked={config.IMAGE_MODE === "BLUR"}
-                                               onChange={handleImageModeChange}/>
-                                    </label>
-                                </div>
-                            </label>
-                            <div className="divider"></div>
-                            <div className="grid grid-cols-1 gap-4">
-                                {
-                                    fields.other.map((item) => (
-                                        <label className="form-control w-full max-w-xs" key={item.name}>
-                                            <div className="label">
-                                                <span className="label-text">{item.label}</span>
-                                            </div>
-                                            <input type="text" name={item.name}
-                                                   value={config ? config[item.name] : ''}
-                                                   onChange={handleChange}
-                                                   className="input input-sm input-bordered w-full max-w-xs"/>
-                                        </label>
-                                    ))
-                                }
+                    <input type="text" name="min_size"
+                           value={config.DEFAULT_FILTER.min_size}
+                           onChange={handleSizeChange}
+                           className="input input-sm input-bordered w-full"/>
+                </label>
+                <label className="form-control w-full">
+                    <div className="label">
+                        <span className="label-text">最大体积(MB)</span>
+                    </div>
+                    <input type="text" name="max_size"
+                           value={config.DEFAULT_FILTER.max_size}
+                           onChange={handleSizeChange}
+                           className="input input-sm input-bordered w-full"/>
+                </label>
+                <div className="divider">排序</div>
+                {sort.map((item, index) => (
+                    <div key={item.id} className="mb-2">
+                        <label className="label">
+                            <label className="label-text w-12">{item.content}</label>
+                            <div>
+                                <button
+                                    className="btn btn-sm btn-primary"
+                                    onClick={() => moveItem(index, -1)}
+                                    disabled={index === 0}
+                                >
+                                    上移
+                                </button>
+                                <button
+                                    className="btn btn-sm btn-secondary ml-2"
+                                    onClick={() => moveItem(index, 1)}
+                                    disabled={index === sort.length - 1}
+                                >
+                                    下移
+                                </button>
                             </div>
-
-                        </div>
-                    </form>
+                        </label>
+                    </div>
+                ))}
+                <div className="divider">其他</div>
+                <label className="form-control w-full">
+                    <div className="label">
+                        <span className="label-text">图片模式</span>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">无图</span>
+                            <input type="radio" name="radio-10" className="radio checked:bg-red-500"
+                                   value="INVISIBLE" checked={config.IMAGE_MODE === "INVISIBLE"}
+                                   onChange={handleImageModeChange}/>
+                        </label>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">有图</span>
+                            <input type="radio" name="radio-10" className="radio checked:bg-blue-500"
+                                   value="VISIBLE" checked={config.IMAGE_MODE === "VISIBLE"}
+                                   onChange={handleImageModeChange}/>
+                        </label>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">模糊</span>
+                            <input type="radio" name="radio-10" className="radio checked:bg-yellow-500"
+                                   value="BLUR" checked={config.IMAGE_MODE === "BLUR"}
+                                   onChange={handleImageModeChange}/>
+                        </label>
+                    </div>
+                </label>
+                {
+                    fields.other.map((item) => (
+                        <label className="form-control w-full" key={item.name}>
+                            <div className="label">
+                                <span className="label-text">{item.label}</span>
+                            </div>
+                            <input type="text" name={item.name}
+                                   value={config ? config[item.name] : ''}
+                                   onChange={handleChange}
+                                   className="input input-sm input-bordered w-full"/>
+                        </label>
+                    ))
+                }
+                <div className="text-center">
+                    <button className="btn btn-sm btn-primary btn-wide mt-2" onClick={saveConfig}>保存</button>
                 </div>
-            </div>
-            <div className="divider"></div>
-            <div className="text-center">
-                <button className="btn btn-sm btn-primary btn-wide mt-2" onClick={saveConfig}>保存</button>
             </div>
         </div>
 
