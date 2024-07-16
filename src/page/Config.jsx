@@ -6,7 +6,8 @@ const initialSort = [
     {id: 'uc', content: '无码'},
     {id: 'seeders', content: '做种'},
     {id: 'chinese', content: '中文'},
-    {id: 'uhd', content: 'UHD'}
+    {id: 'uhd', content: 'UHD'},
+    {id: '!uhd', content: '排除UHD'}
 ];
 
 const loadSort = (sort_arr) => {
@@ -14,6 +15,12 @@ const loadSort = (sort_arr) => {
     for (let i = 0; i < sort_arr.length; i++) {
         const item = initialSort.find(item => item.id === sort_arr[i]);
         if (item) {
+            newItems.push(item)
+        }
+    }
+    for (let i = 0; i < initialSort.length; i++) {
+        const item = initialSort[i];
+        if (!newItems.includes(item)) {
             newItems.push(item)
         }
     }
@@ -110,7 +117,8 @@ const Config = () => {
             "uhd",
             "uc",
             "chinese",
-            "seeders"
+            "seeders",
+            "!uhd"
         ],
         "RANK_PAGE": "1",
         "FLARE_SOLVERR_URL": ""
@@ -308,29 +316,31 @@ const Config = () => {
                                onChange={handleExcludeUHDChange}/>
                     </label>
                 </div>
-                <label className="form-control w-full">
-                    <div className="label">
+                <div className="form-control">
+                    <label className="label">
                         <span className="label-text">最小体积(MB)</span>
-                    </div>
-                    <input type="text" name="min_size"
-                           value={config.DEFAULT_FILTER.min_size}
-                           onChange={handleSizeChange}
-                           className="input input-sm input-bordered w-full"/>
-                </label>
-                <label className="form-control w-full">
-                    <div className="label">
+                        <input type="text" name="min_size"
+                               value={config.DEFAULT_FILTER.min_size}
+                               onChange={handleSizeChange}
+                               className="input input-sm input-bordered"/>
+                    </label>
+
+
+                </div>
+                <div className="form-control w-full">
+                    <label className="label">
                         <span className="label-text">最大体积(MB)</span>
-                    </div>
-                    <input type="text" name="max_size"
-                           value={config.DEFAULT_FILTER.max_size}
-                           onChange={handleSizeChange}
-                           className="input input-sm input-bordered w-full"/>
-                </label>
+                        <input type="text" name="max_size"
+                               value={config.DEFAULT_FILTER.max_size}
+                               onChange={handleSizeChange}
+                               className="input input-sm input-bordered"/>
+                    </label>
+                </div>
                 <div className="divider">排序</div>
                 {sort.map((item, index) => (
                     <div key={item.id} className="mb-2">
                         <label className="label">
-                            <label className="label-text w-12">{item.content}</label>
+                            <label className="label-text">{item.content}</label>
                             <div>
                                 <button
                                     className="btn btn-sm btn-primary"

@@ -74,38 +74,62 @@ const CodeCard = ({code}) => {
     };
 
     const handleChineseChange = (e) => {
-        const newFilter = {...subscribe.filter}
-        newFilter['only_chinese'] = e.target.checked
         setSubscribe({
             ...subscribe,
-            filter: newFilter
+            filter: {
+                ...subscribe.filter,
+                only_chinese: e.target.checked
+            }
         })
-
     }
     const handleUCChange = (e) => {
-        const newFilter = {...subscribe.filter}
-        newFilter['only_uc'] = e.target.checked
         setSubscribe({
             ...subscribe,
-            filter: newFilter
+            filter: {
+                ...subscribe.filter,
+                only_uc: e.target.checked
+            }
         })
-
     }
     const handleUHDChange = (e) => {
-        const newFilter = {...subscribe.filter}
-        newFilter['only_uhd'] = e.target.checked
         setSubscribe({
             ...subscribe,
-            filter: newFilter
+            filter: {
+                ...subscribe.filter,
+                only_uhd: e.target.checked,
+                exclude_uhd: e.target.checked && subscribe.filter.exclude_uhd ? false : subscribe.filter.exclude_uhd
+            }
         })
-
     }
+    const handleExcludeUHDChange = (e) => {
+        setSubscribe({
+            ...subscribe,
+            filter: {
+                ...subscribe.filter,
+                exclude_uhd: e.target.checked,
+                only_uhd: e.target.checked && subscribe.filter.only_uhd ? false : subscribe.filter.only_uhd
+            }
+        })
+    }
+
+    const handleSizeChange = (event) => {
+        const {name, value} = event.target;
+        setSubscribe({
+            ...subscribe,
+            filter: {
+                ...subscribe.filter,
+                [name]: value
+            }
+        });
+    };
+
     const handleModeChange = (e) => {
         setSubscribe({
             ...subscribe,
             mode: e.target.value
         })
     };
+
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -122,7 +146,7 @@ const CodeCard = ({code}) => {
         navigate(`/app/search/${item}`)
     };
     return (
-        <div className="card bg-base-100 shadow-xl card-bordered card-compact" >
+        <div className="card bg-base-100 shadow-xl card-bordered card-compact">
             {['VISIBLE', 'BLUR'].includes(imageMode) &&
                 <figure>
                     <img
@@ -240,6 +264,34 @@ const CodeCard = ({code}) => {
                                 <input type="checkbox" className="toggle toggle-sm"
                                        checked={subscribe.filter.only_uhd}
                                        onChange={handleUHDChange}/>
+                            </label>
+                        </div>
+                        <div className="form-control">
+                            <label className="label cursor-pointer">
+                                <span className="label-text">排除UHD</span>
+                                <input type="checkbox" className="toggle toggle-sm"
+                                       checked={subscribe.filter.exclude_uhd}
+                                       onChange={handleExcludeUHDChange}/>
+                            </label>
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">最小体积(MB)</span>
+                                <input type="text" name="min_size"
+                                       value={subscribe.filter.min_size}
+                                       onChange={handleSizeChange}
+                                       className="input input-sm input-bordered"/>
+                            </label>
+
+
+                        </div>
+                        <div className="form-control w-full">
+                            <label className="label">
+                                <span className="label-text">最大体积(MB)</span>
+                                <input type="text" name="max_size"
+                                       value={subscribe.filter.max_size}
+                                       onChange={handleSizeChange}
+                                       className="input input-sm input-bordered"/>
                             </label>
                         </div>
                         <div className="form-control">

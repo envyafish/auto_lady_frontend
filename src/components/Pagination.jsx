@@ -1,7 +1,8 @@
 // src/Pagination.js
 import React from 'react';
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = ({currentPage, totalPages, onPageChange}) => {
+    currentPage = parseInt(currentPage)
     const getPages = () => {
         const pages = [];
         if (totalPages <= 10) {

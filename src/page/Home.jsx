@@ -33,7 +33,7 @@ const Home = () => {
             <div className="p-1">
                 <Routes>
                     <Route path="subscribe" element={<Subscribe/>}/>
-                    <Route path="rank" element={<Rank/>}/>
+                    <Route path="rank/:page" element={<Rank/>}/>
                     <Route path="actor" element={<Actor/>}/>
                     <Route path="config" element={<Config/>}/>
                     <Route path="profile" element={<Profile/>}/>
