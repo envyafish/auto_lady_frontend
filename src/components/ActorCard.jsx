@@ -36,8 +36,8 @@ const ActorCard = ({actor}) => {
     }
 
     const cancelActor = () => {
-        Api.delete('/actors/cancel', actor).then(res => {
-            if(res.success){
+        Api.delete('/actors/cancel?code_no=' + actor.code).then(res => {
+            if (res.success) {
                 setIsSub(true)
                 alert.success(res.message)
             }

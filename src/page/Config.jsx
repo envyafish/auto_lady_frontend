@@ -50,6 +50,9 @@ const fields = {
         {"name": "WECHAT_AGENT_ID", "label": "微信应用ID"},
         {"name": "WECHAT_PROXY", "label": "微信代理"},
         {"name": "WECHAT_PHOTO", "label": "微信推送图片（外网可以访问）"},
+        {"name": "WECHAT_TOKEN", "label": "微信token"},
+        {"name": "WECHAT_ENCODING_AES_KEY", "label": "微信aes_key"},
+        {"name": "WECHAT_TO_USER", "label": "微信touser,|分割,默认@all"},
         {"name": "TELEGRAM_BOT_TOKEN", "label": "Telegram Bot Token"},
         {"name": "TELEGRAM_CHAT_ID", "label": "Telegram Chat ID"}
     ],
@@ -67,8 +70,12 @@ const fields = {
     ],
     "other": [
         {"name": "PROXY", "label": "代理地址"},
-        {"name": "FLARE_SOLVERR_URL", "label": "flaresolverr地址"},
-        {"name": "RANK_PAGE", "label": "榜单自动订阅页数(0不订阅)"}
+        {"name": "FLARE_SOLVERR_URL", "label": "flaresolverr地址(已弃用)"},
+        {"name": "RANK_PAGE", "label": "榜单自动订阅页数(0不订阅)"},
+        {"name": "RANK_SCHEDULE_TIME", "label": "榜单订阅计划时间(HH:mm)"},
+        {"name": "ACTOR_SCHEDULE_TIME", "label": "演员订阅计划时间(HH:mm)"},
+        {"name": "DOWNLOAD_SCHEDULE_TIME", "label": "番号订阅计划时间(HH:mm)"},
+
     ]
 }
 
