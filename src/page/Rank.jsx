@@ -6,11 +6,19 @@ import LoadingModal from "../components/LoadingModal";
 import {useAlert} from "react-alert";
 import {useNavigate, useParams} from "react-router-dom";
 
+const subscribeStatus = {
+    '全部': '',
+    '订阅中': 'SUBSCRIBE',
+    '已完成': 'COMPLETE',
+    '未订阅': 'UN_SUBSCRIBE'
+}
 const Rank = () => {
     const {page} = useParams();
+    const [activeTab, setActiveTab] = useState('全部');
     const navigate = useNavigate()
     const alert = useAlert()
     const [codes, setCodes] = useState([])
+    const [originalCodes, setOriginalCodes] = useState([])
     const [loading, setLoading] = useState(false)
 
 
@@ -20,6 +28,7 @@ const Rank = () => {
         Api.get('/ranks?page=' + page).then(res => {
             setLoading(false)
             setCodes(res.data)
+            setOriginalCodes(res.data)
         }).catch(e => {
             alert.error("服务器异常");
         })
@@ -28,6 +37,17 @@ const Rank = () => {
     useEffect(() => {
         fetchCodes()
     }, [page]);
+
+    const handleTabClick = (tab) => {
+        const status = subscribeStatus[tab]
+        if (status === ""){
+            setCodes(originalCodes)
+        }else {
+            const filterCodes = originalCodes.filter(code => code.status === status)
+            setCodes(filterCodes)
+        }
+        setActiveTab(tab);
+    };
     const subscribeCommand = () => {
         const code_arr = codes.map(code => code.code).join(',')
         Api.get('/rank/subscribe?codes=' + code_arr).then(res => {
@@ -42,6 +62,36 @@ const Rank = () => {
     };
     return (
         <div>
+            <div role="tablist" className="tabs tabs-boxed">
+                <a
+                    role="tab"
+                    className={`tab ${activeTab === '全部' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('全部')}
+                >
+                    全部
+                </a>
+                <a
+                    role="tab"
+                    className={`tab ${activeTab === '订阅中' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('订阅中')}
+                >
+                    订阅中
+                </a>
+                <a
+                    role="tab"
+                    className={`tab ${activeTab === '已完成' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('已完成')}
+                >
+                    已完成
+                </a>
+                <a
+                    role="tab"
+                    className={`tab ${activeTab === '未订阅' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('未订阅')}
+                >
+                    未订阅
+                </a>
+            </div>
             <LoadingModal isOpen={loading} type="spin" color="#000" height={100} width={100}/>
             {!loading &&
                 <div>
@@ -61,7 +111,7 @@ const Rank = () => {
                             <CodeCard code={item} key={index}></CodeCard>
                         ))}
                     </div>
-                    <Pagination currentPage={page} totalPages={100}
+                    <Pagination currentPage={page} totalPages={25}
                                 onPageChange={(item) => navigate(`/app/rank/${item}`)}/>
                 </div>
             }
