@@ -168,7 +168,7 @@ const CodeCard = ({code}) => {
                 <span className="mr-1">发售日期：{code.release_date}</span>
                 <p className="text-sm">{code.title}</p>
                 <div>
-                    {actors.map((item, index) => (
+                    {actors.slice(0, 4).map((item, index) => (
                         <span className="badge badge-sm badge-outline badge-info mr-1 link" key={index}
                               onClick={() => toSearch(item)}>{item}</span>
                     ))}

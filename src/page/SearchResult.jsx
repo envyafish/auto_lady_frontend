@@ -13,30 +13,55 @@ const SearchResult = () => {
     const [actors, setActors] = useState([])
     const [torrents, setTorrents] = useState([])
     const [loading, setLoading] = useState(false)
+    const [keyword, setKeyword] = useState(query)
 
 
     useEffect(() => {
         setCodes([])
         setActors([])
         setTorrents([])
-        complexSearch()
+        search()
     }, [query]);
 
-    const complexSearch = () => {
-        setLoading(true)
-        Api.get("/complex/search?query=" + query).then(res => {
-            setLoading(false)
-            setCodes(res.data.codes)
-            setActors(res.data.actors)
-            setTorrents(res.data.torrents)
-        }).catch(e => {
-            alert.error("服务器异常");
-        })
+    const complexSearch = (e) => {
+        if (e.key === 'Enter') {
+            search()
+        }
+    }
+
+    const search = () => {
+        if (keyword) {
+            setLoading(true)
+            Api.get("/complex/search?query=" + keyword).then(res => {
+                setLoading(false)
+                setCodes(res.data.codes)
+                setActors(res.data.actors)
+                setTorrents(res.data.torrents)
+            }).catch(e => {
+                alert.error("服务器异常");
+            })
+        }
     }
 
 
     return (
         <div>
+            <label className="input input-bordered btn-block btn-sm flex items-center gap-2 mt-2">
+                <input type="text" className="grow" placeholder="番号、演员" value={keyword}
+                       onChange={(e) => setKeyword(e.target.value)}
+                       onKeyDown={complexSearch}
+                />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="h-4 w-4 opacity-70">
+                    <path
+                        fillRule="evenodd"
+                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                        clipRule="evenodd"/>
+                </svg>
+            </label>
             {
                 loading && <span className="loading loading-bars loading-lg"></span>
             }
