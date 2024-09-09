@@ -410,7 +410,7 @@ const Config = () => {
                         </label>
                     ))
                 }
-                <div className="text-center fixed bottom-2 w-full">
+                <div className="text-center w-full">
                     <button className="btn btn-sm btn-primary btn-wide mt-2 m-auto" onClick={saveConfig}>保存</button>
                 </div>
             </div>

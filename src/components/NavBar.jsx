@@ -231,7 +231,7 @@ const Navbar = () => {
                 </div>
 
                 <div role="button" className="btn btn-ghost btn-circle"
-                     onClick={() => window.open("https://github.com/envyafish/AutoLady", "_blank")}>
+                     onClick={() => window.open("https://github.com/envyafish/AutoLadyIssue", "_blank")}>
                     <div className="indicator">
                         <svg className="h-6 w-6" viewBox="0 0 48 48" fill="none"
                              xmlns="http://www.w3.org/2000/svg">

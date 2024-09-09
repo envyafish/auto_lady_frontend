@@ -5,7 +5,7 @@ import {useAlert} from "react-alert";
 const IMAGE_PROXY_URL = import.meta.env.VITE_IMAGE_PROXY;
 const ActorCard = ({actor}) => {
     const alert = useAlert()
-    const [limitDate, setLimitDate] = useState('')
+    const [limitDate, setLimitDate] = useState(actor.limit_date)
 
     const [isSub, setIsSub] = useState(actor.is_sub)
 

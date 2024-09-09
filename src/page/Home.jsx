@@ -9,7 +9,6 @@ import SearchResult from "./SearchResult";
 import {useEffect} from "react";
 import API from "../utils/Api";
 import {useAlert} from "react-alert";
-import Options from "./Options";
 
 const Home = () => {
     const alert = useAlert()
