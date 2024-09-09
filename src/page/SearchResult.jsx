@@ -1,14 +1,15 @@
 import {useEffect, useState} from "react";
 import CodeCard from "../components/CodeCard";
 import ActorCard from "../components/ActorCard";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import Api from "../utils/Api";
 import Torrent from "../components/Torrent";
 import {useAlert} from "react-alert";
 
 const SearchResult = () => {
     const alert = useAlert()
-    const {query} = useParams();
+    const location = useLocation();
+    const {query} = location.state || {};
     const [codes, setCodes] = useState([])
     const [actors, setActors] = useState([])
     const [torrents, setTorrents] = useState([])
@@ -17,9 +18,6 @@ const SearchResult = () => {
 
 
     useEffect(() => {
-        setCodes([])
-        setActors([])
-        setTorrents([])
         search()
     }, [query]);
 
@@ -31,6 +29,9 @@ const SearchResult = () => {
 
     const search = () => {
         if (keyword) {
+            setCodes([])
+            setActors([])
+            setTorrents([])
             setLoading(true)
             Api.get("/complex/search?query=" + keyword).then(res => {
                 setLoading(false)

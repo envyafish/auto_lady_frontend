@@ -143,7 +143,7 @@ const CodeCard = ({code}) => {
 
 
     const toSearch = (item) => {
-        navigate(`/app/search/${item}`)
+        navigate(`/app/search`, {state: {query: item}})
     };
     return (
         <div className="card bg-base-100 shadow-xl card-bordered card-compact">

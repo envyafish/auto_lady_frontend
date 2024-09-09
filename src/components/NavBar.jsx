@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {Navigate, NavLink, useNavigate} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {themeChange} from "theme-change";
 import {useEffect} from 'react'
 
@@ -41,20 +40,7 @@ const themeEntries = Object.entries(themes);
 
 
 const Navbar = () => {
-    const navigate = useNavigate()
-    const [query, setQuery] = useState('')
 
-    const handleSearch = (e) => {
-        // console.log(query)
-        if (e.key === 'Enter') {
-            if (query) {
-                navigate(`/app/search/${query}`)
-            }
-        }
-    };
-    const handleChange = (e) => {
-        setQuery(e.target.value)
-    };
 
     useEffect(() => {
         themeChange(false)
@@ -167,8 +153,8 @@ const Navbar = () => {
                     </li>
                     <li>
                         <NavLink to="/app/search">
-                            <svg  stroke="currentColor" className="h-5 w-5" viewBox="0 0 1024 1024" version="1.1"
-                                 xmlns="http://www.w3.org/2000/svg"  width="200" height="200">
+                            <svg stroke="currentColor" className="h-5 w-5" viewBox="0 0 1024 1024" version="1.1"
+                                 xmlns="http://www.w3.org/2000/svg" width="200" height="200">
                                 <path
                                     d="M874.666667 814.933333l-209.066667-209.066666C704 554.666667 725.333333 494.933333 725.333333 426.666667c0-166.4-132.266667-298.666667-298.666666-298.666667s-298.666667 132.266667-298.666667 298.666667 132.266667 298.666667 298.666667 298.666666c68.266667 0 128-21.333333 179.2-59.733333l209.066666 209.066667c17.066667 17.066667 42.666667 17.066667 59.733334 0s17.066667-42.666667 0-59.733334zM426.666667 640c-119.466667 0-213.333333-93.866667-213.333334-213.333333s93.866667-213.333333 213.333334-213.333334 213.333333 93.866667 213.333333 213.333334-93.866667 213.333333-213.333333 213.333333z"
                                     fill="currentColor"></path>

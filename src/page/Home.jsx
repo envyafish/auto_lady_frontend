@@ -37,7 +37,6 @@ const Home = () => {
                     <Route path="config" element={<Config/>}/>
                     <Route path="profile" element={<Profile/>}/>
                     <Route path="search" element={<SearchResult/>}/>
-                    <Route path="search/:query" element={<SearchResult/>}/>
                 </Routes>
             </div>
         </div>
