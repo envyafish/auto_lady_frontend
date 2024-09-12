@@ -3,7 +3,7 @@ import React from 'react';
 import ReactModal from 'react-modal';
 import ReactLoading from 'react-loading';
 
-const LoadingModal = ({ isOpen, type = 'spin', color = '#000', height = 100, width = 100 }) => (
+const LoadingModal = ({ isOpen, type = 'spin', height = 100, width = 100 }) => (
     <ReactModal
         isOpen={isOpen}
         contentLabel="Loading"
@@ -25,7 +25,7 @@ const LoadingModal = ({ isOpen, type = 'spin', color = '#000', height = 100, wid
         }}
         ariaHideApp={false}
     >
-        <ReactLoading type={type} color={color} height={height} width={width} />
+        <ReactLoading type={type}  height={height} width={width} />
     </ReactModal>
 );
 

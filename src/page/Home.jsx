@@ -9,6 +9,7 @@ import SearchResult from "./SearchResult";
 import {useEffect} from "react";
 import API from "../utils/Api";
 import {useAlert} from "react-alert";
+import DbRank from "./DbRank";
 
 const Home = () => {
     const alert = useAlert()
@@ -33,6 +34,7 @@ const Home = () => {
                 <Routes>
                     <Route path="subscribe" element={<Subscribe/>}/>
                     <Route path="rank/:page" element={<Rank/>}/>
+                    <Route path="avdb" element={<DbRank/>}/>
                     <Route path="actor" element={<Actor/>}/>
                     <Route path="config" element={<Config/>}/>
                     <Route path="profile" element={<Profile/>}/>

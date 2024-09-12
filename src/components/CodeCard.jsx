@@ -62,8 +62,9 @@ const CodeCard = ({code}) => {
         }).catch(e => {
             alert.error("服务器异常");
         })
+    }
 
-    };
+
     const cancelCode = () => {
         Api.delete('/codes/cancel?code_no=' + code.code).then(res => {
             setCodeStatus("UN_SUBSCRIBE")
@@ -71,7 +72,8 @@ const CodeCard = ({code}) => {
         }).catch(e => {
             alert.error("服务器异常");
         })
-    };
+    }
+
 
     const handleChineseChange = (e) => {
         setSubscribe({

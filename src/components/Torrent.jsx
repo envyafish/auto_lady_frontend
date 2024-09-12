@@ -13,7 +13,8 @@ const Torrent = ({torrent}) => {
         }).catch(e => {
             alert.error("服务器异常");
         })
-    };
+    }
+
     return (
         <div className="card bg-base-100 w-full shadow-xl mt-2 card-bordered card-compact">
             <div className="card-body">

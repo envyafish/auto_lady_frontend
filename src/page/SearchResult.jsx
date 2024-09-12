@@ -5,6 +5,7 @@ import {useLocation, useParams} from "react-router-dom";
 import Api from "../utils/Api";
 import Torrent from "../components/Torrent";
 import {useAlert} from "react-alert";
+import LoadingModal from "../components/LoadingModal";
 
 const SearchResult = () => {
     const alert = useAlert()
@@ -63,23 +64,19 @@ const SearchResult = () => {
                         clipRule="evenodd"/>
                 </svg>
             </label>
-            {
-                loading && <span className="loading loading-bars loading-lg"></span>
-            }
+            <LoadingModal isOpen={loading} type="spin" color="#000" height={100} width={100}/>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {codes && codes.map((item, index) => (
                     <CodeCard code={item} key={index}></CodeCard>
                 ))}
 
             </div>
-            {codes && actors && <div className="divider"></div>}
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {actors && actors.map((item, index) => (
                     <ActorCard actor={item} key={index}></ActorCard>
                 ))
                 }
             </div>
-            {actors && torrents && <div className="divider"></div>}
             <div className="mt-2">
                 {torrents && torrents.map((item, index) => (
                     <Torrent torrent={item} key={index}></Torrent>

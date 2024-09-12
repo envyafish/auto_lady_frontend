@@ -107,7 +107,7 @@ const Subscribe = () => {
                     className={`tab ${activeTab === '未订阅' ? 'tab-active' : ''}`}
                     onClick={() => handleTabClick('未订阅')}
                 >
-                    未订阅
+                    推荐
                 </a>
             </div>
             <LoadingModal isOpen={loading} type="spin" color="#000" height={100} width={100}/>

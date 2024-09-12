@@ -206,7 +206,7 @@ const Config = () => {
         }).catch(e => {
             alert.error("服务器异常");
         })
-    };
+    }
     const handleImageModeChange = (e) => {
         setConfig({
             ...config,

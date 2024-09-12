@@ -17,7 +17,8 @@ const ActorCard = ({actor}) => {
         }).catch(e => {
             alert.error("服务器异常");
         })
-    };
+    }
+
     const handleLimitDateChange = (e) => {
         setLimitDate(e.target.value)
     };
@@ -44,7 +45,8 @@ const ActorCard = ({actor}) => {
         }).catch(e => {
             alert.error("服务器异常");
         })
-    };
+    }
+
     return (
         <div className="card card-side bg-base-100 shadow-xl card-bordered card-compact">
             <figure>
