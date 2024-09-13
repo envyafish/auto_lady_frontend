@@ -66,16 +66,16 @@ const SearchResult = () => {
             </label>
             <LoadingModal isOpen={loading} type="spin" color="#000" height={100} width={100}/>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
-                {codes && codes.map((item, index) => (
-                    <CodeCard code={item} key={index}></CodeCard>
-                ))}
-
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {actors && actors.map((item, index) => (
                     <ActorCard actor={item} key={index}></ActorCard>
                 ))
                 }
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
+                {codes && codes.map((item, index) => (
+                    <CodeCard code={item} key={index}></CodeCard>
+                ))}
+
             </div>
             <div className="mt-2">
                 {torrents && torrents.map((item, index) => (
@@ -83,7 +83,6 @@ const SearchResult = () => {
                 ))
                 }
             </div>
-
         </div>
 
 

@@ -32,8 +32,9 @@ const fields = {
         {"name": "MTEAM_API_KEY", "label": "馒头令牌"},
         {"name": "FSM_API_KEY", "label": "飞天拉面神教APITOKEN"},
         {"name": "FSM_PASSKEY", "label": "飞天拉面神教PASSKEY"},
-        {"name": "LIBRARY_COOKIE", "label": "图书馆cookie"},
-        {"name": "BUS_COOKIE", "label": "公交车cookie"},
+        {"name": "LIBRARY_COOKIE", "label": "非必填!图书馆cookie (https://www.javlibrary.com)"},
+        {"name": "BUS_COOKIE", "label": "非必填!公交车cookie (https://www.javbus.com)"},
+        {"name": "AVDB_COOKIE", "label": "非必填!JAVDB cookie (https://javdb.com)"},
     ],
     "server": [
         {"name": "EMBY_URL", "label": "EMBY地址"},
@@ -50,7 +51,7 @@ const fields = {
         {"name": "WECHAT_AGENT_ID", "label": "微信应用ID"},
         {"name": "WECHAT_PROXY", "label": "微信代理"},
         {"name": "WECHAT_PHOTO", "label": "微信推送图片（外网可以访问）"},
-        {"name": "WECHAT_TOKEN", "label": "微信token"},
+        {"name": "WECHAT_TOKEN", "label": "微信token(需在企业微信配置微信回调地址：/api/v1/message)"},
         {"name": "WECHAT_ENCODING_AES_KEY", "label": "微信aes_key"},
         {"name": "WECHAT_TO_USER", "label": "微信touser,|分割,默认@all"},
         {"name": "TELEGRAM_BOT_TOKEN", "label": "Telegram Bot Token"},
@@ -71,10 +72,11 @@ const fields = {
     "other": [
         {"name": "PROXY", "label": "代理地址"},
         {"name": "FLARE_SOLVERR_URL", "label": "flaresolverr地址(已弃用)"},
-        {"name": "RANK_PAGE", "label": "榜单自动订阅页数(0不订阅)"},
+        {"name": "RANK_PAGE", "label": "图书馆榜单自动订阅(请输入数字页码1-25),0或者空不订阅"},
+        {"name": "RANK_TYPE", "label": "JAVDB榜单自动订阅(请输入：daily,weekly,monthly),空则不订阅"},
         {"name": "RANK_SCHEDULE_TIME", "label": "榜单订阅计划时间(HH:mm)"},
         {"name": "ACTOR_SCHEDULE_TIME", "label": "演员订阅计划时间(HH:mm)"},
-        {"name": "DOWNLOAD_SCHEDULE_TIME", "label": "番号订阅计划时间(HH:mm)"},
+        {"name": "DOWNLOAD_SCHEDULE_TIME", "label": "番号订阅计划时间(HH:mm) (建议把时间设置在榜单订阅以及演员订阅之后)"},
 
     ]
 }
@@ -128,6 +130,7 @@ const Config = () => {
             "!uhd"
         ],
         "RANK_PAGE": "1",
+        "RANK_TYPE": "weekly",
         "FLARE_SOLVERR_URL": ""
     });
     const [sort, setSort] = useState(initialSort);

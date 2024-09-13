@@ -36,6 +36,7 @@ const Rank = () => {
 
     useEffect(() => {
         fetchCodes()
+        setActiveTab('全部')
     }, [type]);
 
     const handleTabClick = (tab) => {
