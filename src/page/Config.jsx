@@ -70,7 +70,7 @@ const fields = {
         {"name": "TRANSMISSION_LABEL", "label": "Transmission标签"}
     ],
     "other": [
-        {"name": "PROXY", "label": "代理地址"},
+        {"name": "PROXY", "label": "代理地址(http://host:port 或 socks5://host:port 或 socks5://user:pass@host:port)"},
         {"name": "FLARE_SOLVERR_URL", "label": "flaresolverr地址(已弃用)"},
         {"name": "RANK_PAGE", "label": "图书馆榜单自动订阅(请输入数字页码1-25),0或者空不订阅"},
         {"name": "RANK_TYPE", "label": "JAVDB榜单自动订阅(请输入：daily,weekly,monthly),空则不订阅"},
