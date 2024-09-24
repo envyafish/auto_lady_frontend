@@ -7,7 +7,8 @@ const initialSort = [
     {id: 'seeders', content: '做种'},
     {id: 'chinese', content: '中文'},
     {id: 'uhd', content: 'UHD'},
-    {id: '!uhd', content: '排除UHD'}
+    {id: '!uhd', content: '排除UHD'},
+    {id: 'site', content: '站点'}
 ];
 
 const loadSort = (sort_arr) => {
@@ -30,6 +31,7 @@ const loadSort = (sort_arr) => {
 const fields = {
     "site": [
         {"name": "MTEAM_API_KEY", "label": "馒头令牌"},
+        {"name": "PTT_COOKIE", "label": "PTT COOKIE"},
         {"name": "FSM_API_KEY", "label": "飞天拉面神教APITOKEN"},
         {"name": "FSM_PASSKEY", "label": "飞天拉面神教PASSKEY"},
         {"name": "LIBRARY_COOKIE", "label": "非必填!图书馆cookie (https://www.javlibrary.com)"},
@@ -76,7 +78,10 @@ const fields = {
         {"name": "RANK_TYPE", "label": "JAVDB榜单自动订阅(请输入：daily,weekly,monthly),空则不订阅"},
         {"name": "RANK_SCHEDULE_TIME", "label": "榜单订阅计划时间(HH:mm)"},
         {"name": "ACTOR_SCHEDULE_TIME", "label": "演员订阅计划时间(HH:mm)"},
-        {"name": "DOWNLOAD_SCHEDULE_TIME", "label": "番号订阅计划时间(HH:mm) (建议把时间设置在榜单订阅以及演员订阅之后)"},
+        {
+            "name": "DOWNLOAD_SCHEDULE_TIME",
+            "label": "番号订阅计划时间(HH:mm) (建议把时间设置在榜单订阅以及演员订阅之后)"
+        },
 
     ]
 }
@@ -103,6 +108,7 @@ const Config = () => {
         "FSM_API_KEY": "",
         "FSM_PASSKEY": "",
         "MTEAM_API_KEY": "",
+        "PTT_COOKIE": "",
         "LIBRARY_COOKIE": "",
         "BUS_COOKIE": "",
         "WECHAT_CORP_ID": "",
@@ -127,8 +133,10 @@ const Config = () => {
             "uc",
             "chinese",
             "seeders",
-            "!uhd"
+            "!uhd",
+            "site"
         ],
+        "MAIN_SITE": "ALL",
         "RANK_PAGE": "1",
         "RANK_TYPE": "weekly",
         "FLARE_SOLVERR_URL": ""
@@ -217,6 +225,13 @@ const Config = () => {
         })
     };
 
+    const handleMainSiteChange = (e) => {
+        setConfig({
+            ...config,
+            MAIN_SITE: e.target.value
+        })
+    };
+
     const fetchConfig = () => {
         API.get('/config').then(res => {
             if (res.success) {
@@ -238,6 +253,7 @@ const Config = () => {
         <div className="container mx-auto p-4">
             <div className="space-y-4">
                 <div className="divider">站点</div>
+
                 {
                     fields.site.map((item) => (
                         <label className="form-control w-full" key={item.name}>
@@ -370,6 +386,43 @@ const Config = () => {
                         </label>
                     </div>
                 ))}
+                <label className="form-control w-full">
+                    <div className="label">
+                        <span className="label-text">主站选择(配合排序器使用)</span>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">自动</span>
+                            <input type="radio" className="radio checked:bg-red-500"
+                                   value="ALL" checked={config.MAIN_SITE === "ALL"}
+                                   onChange={handleMainSiteChange}/>
+                        </label>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">馒头</span>
+                            <input type="radio" className="radio checked:bg-blue-500"
+                                   value="馒头" checked={config.MAIN_SITE === "馒头"}
+                                   onChange={handleMainSiteChange}/>
+                        </label>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">飞天拉面神教</span>
+                            <input type="radio" className="radio checked:bg-yellow-500"
+                                   value="飞天拉面神教" checked={config.MAIN_SITE === "飞天拉面神教"}
+                                   onChange={handleMainSiteChange}/>
+                        </label>
+                    </div>
+                    <div className="form-control">
+                        <label className="label cursor-pointer">
+                            <span className="label-text">PTT</span>
+                            <input type="radio" className="radio checked:bg-yellow-500"
+                                   value="PTT" checked={config.MAIN_SITE === "PTT"}
+                                   onChange={handleMainSiteChange}/>
+                        </label>
+                    </div>
+                </label>
                 <div className="divider">其他</div>
                 <label className="form-control w-full">
                     <div className="label">
@@ -418,7 +471,6 @@ const Config = () => {
                 </div>
             </div>
         </div>
-
 
     );
 };

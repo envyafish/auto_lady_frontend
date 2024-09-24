@@ -1,7 +1,6 @@
 import NavBar from "../components/NavBar";
-import {Navigate, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import Subscribe from "./Subscribe";
-import Rank from "./Rank";
 import Actor from "./Actor";
 import Config from "./Config";
 import Profile from "./Profile";
@@ -9,7 +8,7 @@ import SearchResult from "./SearchResult";
 import {useEffect} from "react";
 import API from "../utils/Api";
 import {useAlert} from "react-alert";
-import DbRank from "./DbRank";
+import Hot from "./Hot";
 
 const Home = () => {
     const alert = useAlert()
@@ -33,8 +32,7 @@ const Home = () => {
             <div className="p-1">
                 <Routes>
                     <Route path="subscribe" element={<Subscribe/>}/>
-                    <Route path="rank/:page" element={<Rank/>}/>
-                    <Route path="avdb" element={<DbRank/>}/>
+                    <Route path="hot" element={<Hot/>}/>
                     <Route path="actor" element={<Actor/>}/>
                     <Route path="config" element={<Config/>}/>
                     <Route path="profile" element={<Profile/>}/>
