@@ -18,7 +18,7 @@ export default defineConfig({
                 icons: [
                     //添加图标， 注意路径和图像像素正确
                     {
-                        src: '/logo.jpg',
+                        src: '/logo.png',
                         sizes: '1024x1024',
                         type: 'image/png',
                     },

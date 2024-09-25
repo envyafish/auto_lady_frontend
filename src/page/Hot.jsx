@@ -76,18 +76,19 @@ const Hot = () => {
                 </a>
                 <a
                     role="tab"
-                    className={`tab ${activeTab === '已完成' ? 'tab-active' : ''}`}
-                    onClick={() => handleTabClick('已完成')}
-                >
-                    已完成
-                </a>
-                <a
-                    role="tab"
                     className={`tab ${activeTab === '未订阅' ? 'tab-active' : ''}`}
                     onClick={() => handleTabClick('未订阅')}
                 >
                     未订阅
                 </a>
+                <a
+                    role="tab"
+                    className={`tab ${activeTab === '已完成' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('已完成')}
+                >
+                    已完成
+                </a>
+
             </div>
             <LoadingModal isOpen={loading} type="spin" height={100} width={100}/>
             {!loading &&
