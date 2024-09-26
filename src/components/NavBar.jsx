@@ -43,30 +43,20 @@ const themeEntries = Object.entries(themes);
 
 const Navbar = () => {
 
-    const [version, setVersion] = useState('1.0.0')
-    const [latestVersion, setLatestVersion] = useState('1.0.0')
+    const [version, setVersion] = useState()
+    const [latestVersion, setLatestVersion] = useState()
     const [toastVisible, setToastVisible] = useState(false)
 
     useEffect(() => {
         themeChange(false)
         fetchVersion()
-        fetchLatestVersion()
     }, [])
 
     const fetchVersion = () => {
         API.get('/version').then(res => {
             if (res.success) {
-                setVersion(res.data)
-            }
-        }).catch(e => {
-            alert.error("服务器异常");
-        })
-    }
-
-    const fetchLatestVersion = () => {
-        API.get('/latest_version').then(res => {
-            if (res.success) {
-                setLatestVersion(res.data)
+                setVersion(res.data.version)
+                setLatestVersion(res.data.latest_version)
             }
         }).catch(e => {
             alert.error("服务器异常");
@@ -223,7 +213,7 @@ const Navbar = () => {
                     </div>
                 }
                 {
-                    version === latestVersion &&
+                    version && latestVersion && version === latestVersion &&
                     <span>V{version}</span>
                 }
 
