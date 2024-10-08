@@ -37,6 +37,7 @@ const Hot = () => {
 
     const handleTabClick = (tab) => {
         const status = subscribeStatus[tab]
+        setCodes([])
         if (status === "") {
             setCodes(originalCodes)
         } else {

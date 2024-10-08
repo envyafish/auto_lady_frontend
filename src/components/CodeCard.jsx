@@ -182,7 +182,7 @@ const CodeCard = ({code}) => {
 
                 <div className="card-actions justify-end">
                     <div className="card-actions justify-end">
-                        {['VISIBLE', 'BLUR'].includes(imageMode) &&
+                        {['VISIBLE', 'BLUR'].includes(imageMode) && still_photo_arr.length>0 &&
                             <button className="btn btn-sm btn-outline btn-neutral"
                                     onClick={() => document.getElementById('stillPhotoModal-' + code.code).showModal()}>剧照
                             </button>
