@@ -67,19 +67,19 @@ const SearchResult = () => {
             <LoadingModal isOpen={loading} type="spin" color="#000" height={100} width={100}/>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {actors && actors.map((item, index) => (
-                    <ActorCard actor={item} key={index}></ActorCard>
+                    <ActorCard actor={item} key={item.code}></ActorCard>
                 ))
                 }
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                 {codes && codes.map((item, index) => (
-                    <CodeCard code={item} key={index}></CodeCard>
+                    <CodeCard code={item} key={item.code}></CodeCard>
                 ))}
 
             </div>
             <div className="mt-2">
                 {torrents && torrents.map((item, index) => (
-                    <Torrent torrent={item} key={index}></Torrent>
+                    <Torrent torrent={item} key={item.id}></Torrent>
                 ))
                 }
             </div>

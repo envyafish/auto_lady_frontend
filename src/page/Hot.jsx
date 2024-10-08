@@ -107,7 +107,7 @@ const Hot = () => {
                     <div
                         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                         {codes.map((item, index) => (
-                            <CodeCard code={item} key={index}></CodeCard>
+                            <CodeCard code={item} key={item.code}></CodeCard>
                         ))}
                     </div>
                 </div>

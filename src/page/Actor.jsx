@@ -24,7 +24,7 @@ const Actor = () => {
                 <div>
                     <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 place-content-center mt-2">
                         {actors.map((item, index) => (
-                            <ActorCard actor={item} key={index}></ActorCard>
+                            <ActorCard actor={item} key={item.code}></ActorCard>
                         ))
                         }
                     </div>
