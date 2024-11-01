@@ -3,6 +3,7 @@ import Api from "../utils/Api";
 import {useEffect, useState} from "react";
 import LoadingModal from "../components/LoadingModal";
 import {useAlert} from "react-alert";
+import BackToTopButton from "../components/BackToTopButton";
 
 const subscribeStatus = {
     '全部': '',
@@ -125,6 +126,7 @@ const Hot = () => {
                     </div>
                 </div>
             </dialog>
+            <BackToTopButton />
         </div>
     );
 };

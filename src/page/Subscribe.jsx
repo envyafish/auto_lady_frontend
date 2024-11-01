@@ -4,6 +4,7 @@ import Api from "../utils/Api";
 import Pagination from "../components/Pagination";
 import LoadingModal from "../components/LoadingModal";
 import {useAlert} from "react-alert";
+import BackToTopButton from "../components/BackToTopButton";
 
 const subscribeStatus = {
     '猜你喜欢': 'RECOMMEND',
@@ -12,7 +13,7 @@ const subscribeStatus = {
 }
 const Subscribe = () => {
     const alert = useAlert()
-    const [activeTab, setActiveTab] = useState('猜你喜欢');
+    const [activeTab, setActiveTab] = useState('订阅中');
     const [codes, setCodes] = useState([])
     const [loading, setLoading] = useState(false)
     const [keyword, setKeyword] = useState("")
@@ -20,7 +21,7 @@ const Subscribe = () => {
         page: 1,
         size: 20,
         query: '',
-        status: 'RECOMMEND'
+        status: 'SUBSCRIBE'
     })
     const [total, setTotal] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
@@ -96,19 +97,20 @@ const Subscribe = () => {
     return (
         <div>
             <div role="tablist" className="tabs tabs-boxed">
-                <a
-                    role="tab"
-                    className={`tab ${activeTab === '猜你喜欢' ? 'tab-active' : ''}`}
-                    onClick={() => handleTabClick('猜你喜欢')}
-                >
-                    猜你喜欢
-                </a>
+
                 <a
                     role="tab"
                     className={`tab ${activeTab === '订阅中' ? 'tab-active' : ''}`}
                     onClick={() => handleTabClick('订阅中')}
                 >
                     订阅中
+                </a>
+                <a
+                    role="tab"
+                    className={`tab ${activeTab === '猜你喜欢' ? 'tab-active' : ''}`}
+                    onClick={() => handleTabClick('猜你喜欢')}
+                >
+                    猜你喜欢
                 </a>
                 <a
                     role="tab"
@@ -182,7 +184,7 @@ const Subscribe = () => {
                     </div>
                 </div>
             </dialog>
-
+            <BackToTopButton />
         </div>
 
     );

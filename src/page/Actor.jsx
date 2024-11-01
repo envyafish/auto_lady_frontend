@@ -2,6 +2,7 @@ import ActorCard from "../components/ActorCard";
 import {useEffect, useState} from "react";
 import Api from "../utils/Api";
 import LoadingModal from "../components/LoadingModal";
+import BackToTopButton from "../components/BackToTopButton";
 
 
 const Actor = () => {
@@ -30,6 +31,7 @@ const Actor = () => {
                     </div>
                 </div>
             }
+            <BackToTopButton />
         </div>
 
     );

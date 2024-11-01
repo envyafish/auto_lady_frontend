@@ -6,6 +6,7 @@ import Api from "../utils/Api";
 import Torrent from "../components/Torrent";
 import {useAlert} from "react-alert";
 import LoadingModal from "../components/LoadingModal";
+import BackToTopButton from "../components/BackToTopButton";
 
 const SearchResult = () => {
     const alert = useAlert()
@@ -83,6 +84,7 @@ const SearchResult = () => {
                 ))
                 }
             </div>
+            <BackToTopButton />
         </div>
 
 

@@ -5,6 +5,7 @@ import Pagination from "../components/Pagination";
 import LoadingModal from "../components/LoadingModal";
 import {useAlert} from "react-alert";
 import {useNavigate, useParams} from "react-router-dom";
+import BackToTopButton from "../components/BackToTopButton";
 
 const subscribeStatus = {
     '全部': '',
@@ -130,6 +131,7 @@ const Rank = () => {
                     </div>
                 </div>
             </dialog>
+            <BackToTopButton />
         </div>
     );
 };

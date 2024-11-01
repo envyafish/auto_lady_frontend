@@ -153,7 +153,7 @@ const CodeCard = ({code}) => {
                 <figure>
                     <img
                         referrerPolicy="no-referrer"
-                        src={`${IMAGE_PROXY_URL}?url= ${code.banner}`}
+                        src={code.banner.includes('javbus') ? `${IMAGE_PROXY_URL}?url= ${code.banner}` : code.banner}
                         className={imageMode === 'BLUR' ? 'filter blur-sm' : ''}
                     />
                 </figure>
@@ -182,7 +182,7 @@ const CodeCard = ({code}) => {
 
                 <div className="card-actions justify-end">
                     <div className="card-actions justify-end">
-                        {['VISIBLE', 'BLUR'].includes(imageMode) && still_photo_arr.length>0 &&
+                        {['VISIBLE', 'BLUR'].includes(imageMode) && still_photo_arr.length > 0 &&
                             <button className="btn btn-sm btn-outline btn-neutral"
                                     onClick={() => document.getElementById('stillPhotoModal-' + code.code).showModal()}>剧照
                             </button>

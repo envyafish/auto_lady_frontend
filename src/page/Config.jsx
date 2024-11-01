@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import API from "../utils/Api";
 import {useAlert} from "react-alert";
+import BackToTopButton from "../components/BackToTopButton";
 
 const initialSort = [
     {id: 'uc', content: '无码'},
@@ -37,6 +38,7 @@ const fields = {
         {"name": "LIBRARY_COOKIE", "label": "非必填!图书馆cookie (https://www.javlibrary.com)"},
         {"name": "BUS_COOKIE", "label": "非必填!公交车cookie (https://www.javbus.com)"},
         {"name": "AVDB_COOKIE", "label": "非必填!JAVDB cookie (https://javdb.com)"},
+        {"name": "AVBASE_COOKIE", "label": "非必填!AVBASE cookie (https://www.avbase.net)"},
     ],
     "server": [
         {"name": "EMBY_URL", "label": "EMBY地址"},
@@ -73,7 +75,6 @@ const fields = {
     ],
     "other": [
         {"name": "PROXY", "label": "代理地址(http://host:port 或 socks5://host:port 或 socks5://user:pass@host:port)"},
-        {"name": "FLARE_SOLVERR_URL", "label": "flaresolverr地址(已弃用)"},
         {"name": "RANK_PAGE", "label": "图书馆榜单自动订阅(请输入数字页码1-25),0或者空不订阅"},
         {"name": "RANK_TYPE", "label": "JAVDB榜单自动订阅(请输入：daily,weekly,monthly),空则不订阅"},
         {"name": "RANK_SCHEDULE_TIME", "label": "榜单订阅计划时间(HH:mm)"},
@@ -111,6 +112,8 @@ const Config = () => {
         "PTT_COOKIE": "",
         "LIBRARY_COOKIE": "",
         "BUS_COOKIE": "",
+        "AVDB_COOKIE": "",
+        "AVBASE_COOKIE": "",
         "WECHAT_CORP_ID": "",
         "WECHAT_CORP_SECRET": "",
         "WECHAT_AGENT_ID": "",
@@ -470,6 +473,7 @@ const Config = () => {
                     <button className="btn btn-sm btn-primary btn-wide mt-2 m-auto" onClick={saveConfig}>保存</button>
                 </div>
             </div>
+            <BackToTopButton />
         </div>
 
     );
